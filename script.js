@@ -6,11 +6,7 @@
   'use strict';
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---- CONFIG: 배포 전 교체 ---- */
-  var CONFIG = {
-    // Formspree 폼 ID (https://formspree.io → 무료 폼 생성 후 교체). 예: https://formspree.io/f/xzzabcd
-    formEndpoint: 'https://formspree.io/f/YOUR_FORM_ID'
-  };
+  /* ---- 폼 엔드포인트 = index.html의 <form action> 하나가 단일 설정 지점 (JS가 거기서 읽음) ---- */
 
   /* ---- analytics helper (Plausible; 미설정 시 no-op) ---- */
   function track(event, props) {
@@ -43,11 +39,14 @@
   var menu = document.getElementById('mobileMenu');
   if (hamb && menu) {
     function setMenu(open) {
+      var wasOpen = nav.classList.contains('menu-open');
       nav.classList.toggle('menu-open', open);
       hamb.setAttribute('aria-expanded', String(open));
       hamb.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
       hamb.textContent = open ? '✕' : '≡';
       menu.setAttribute('aria-hidden', String(!open));
+      if (open) { var first = menu.querySelector('a'); if (first) first.focus(); }
+      else if (wasOpen) { hamb.focus(); }   // 닫으면 햄버거로 포커스 복귀
     }
     hamb.addEventListener('click', function () {
       setMenu(!nav.classList.contains('menu-open'));
@@ -159,33 +158,42 @@
       var p = picked();
       var blend = p['2'];                                   // Q2 = 주 배정축
       var mismatch = (p['3'] !== '?' && p['3'] !== blend);  // 향 선호 불일치 신호
+      var blends = {
+        a: {
+          name: 'CALM BASIL — 정돈된 집중',
+          desc: '베르가못·바질 결. 중요한 순간 전 한 박자 정돈하는 스위치.'
+        },
+        b: {
+          name: 'CLEAR MINT — 또렷한 모드',
+          desc: '자몽·페퍼민트 결. 생각을 또렷하게 정리하는 스위치.'
+        },
+        c: {
+          name: 'ENERGY CITRUS — 산뜻한 리프레시',
+          desc: '시트러스 결. 분위기를 가볍게 바꾸는 스위치.'
+        }
+      };
+      var selected = blends[blend];
 
       var card = document.getElementById('rcard');
       card.className = 'rcard ' + blend;
       var name = document.getElementById('rname');
       var desc = document.getElementById('rdesc');
-      if (blend === 'a') {
-        name.textContent = 'CALM BASIL — 정돈된 집중';
-        desc.textContent = '베르가못·바질 결. 한 박자 가라앉히고 생각을 정리하는 스위치.';
-      } else {
-        name.textContent = 'CLEAR MINT — 또렷한 각성';
-        desc.textContent = '자몽·페퍼민트 결. 흐릿함을 걷어내고 날을 세우는 스위치.';
-      }
+      name.textContent = selected.name;
+      desc.textContent = selected.desc;
       document.getElementById('rmismatch').textContent =
         mismatch ? '취향은 다른 결이지만, 지금 필요한 상태엔 이 쪽을 추천해요.' : '';
 
       var res = document.getElementById('diagResult');
       res.classList.add('show');
-      res.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      res.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
 
       // 검증 훅: 진단 결과를 사전주문 폼에 실어 전송(PII는 폼으로) + 집계는 Plausible로
       var diagStr = 'q1=' + p['1'] + ' q2=' + p['2'] + ' q3=' + p['3'] + ' blend=' + blend + ' mismatch=' + mismatch;
-      try { localStorage.setItem('maum_diag_last', diagStr); } catch (e) {}
       var pfBlend = document.getElementById('pf-blend');
       var pfDiag = document.getElementById('pf-diag');
       if (pfBlend) pfBlend.value = blend;   // 진단 결과로 관심 향 자동 선택
       if (pfDiag) pfDiag.value = diagStr;
-      track('진단완료', { blend: blend, mismatch: String(mismatch) });
+      track('진단완료', { blend: blend, mismatch: String(mismatch), preference: p['3'] });
     });
   }
 
@@ -196,27 +204,30 @@
     var btn = document.getElementById('pfSubmit');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (btn.disabled) return;                          // in-flight 가드 (Enter 연타 이중 제출 차단)
+      var endpoint = form.getAttribute('action') || '';  // 단일 설정 지점
       var email = document.getElementById('pf-email');
       if (!email.value || !email.checkValidity()) {
         msg.className = 'pf-msg err'; msg.textContent = '올바른 이메일을 입력해주세요.'; email.focus(); return;
       }
-      if (CONFIG.formEndpoint.indexOf('YOUR_FORM_ID') !== -1) {
-        // 엔드포인트 미설정: 거짓 성공 표시 대신 개발 안내
+      if (endpoint.indexOf('YOUR_FORM_ID') !== -1) {
+        // 엔드포인트 미설정: 거짓 성공 대신 개발 안내
         msg.className = 'pf-msg err';
-        msg.textContent = '폼 엔드포인트 미설정 — script.js의 CONFIG.formEndpoint를 Formspree 폼 ID로 교체하세요.';
+        msg.textContent = '폼 엔드포인트 미설정 — index.html의 form action을 Formspree 폼 ID로 교체하세요.';
         return;
       }
       btn.disabled = true; var label = btn.textContent; btn.textContent = '전송 중…';
       msg.className = 'pf-msg'; msg.textContent = '';
-      fetch(CONFIG.formEndpoint, {
+      fetch(endpoint, {
         method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' }
       }).then(function (r) {
         if (r.ok) {
+          var chosenBlend = document.getElementById('pf-blend').value || 'none';  // reset 전에 읽기
           form.reset();
           msg.className = 'pf-msg ok'; msg.textContent = '신청 완료. 출시되면 이메일로 알려드릴게요.';
-          track('사전주문', { blend: document.getElementById('pf-blend').value || 'none' });
+          track('사전주문', { blend: chosenBlend });
         } else {
-          return r.json().then(function (d) {
+          return r.json().catch(function () { return null; }).then(function (d) {
             throw new Error((d && d.errors && d.errors[0] && d.errors[0].message) || '전송 실패');
           });
         }

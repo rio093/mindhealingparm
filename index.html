@@ -24,7 +24,7 @@
       <span class="brand-ko">마음약방</span>
       <span class="brand-en">MAUM YAKBANG</span>
     </a>
-    <nav class="nav-links">
+    <nav class="nav-links" aria-label="주 메뉴">
       <a href="#product">제품소개</a>
       <a href="#diag">향 매칭 진단</a>
       <a href="#routine">루틴 가이드</a>
@@ -36,7 +36,7 @@
     </div>
     <button class="hamb" id="hamb" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">≡</button>
   </div>
-  <nav class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <nav class="mobile-menu" id="mobileMenu" aria-hidden="true" aria-label="모바일 메뉴">
     <a href="#product">제품소개</a>
     <a href="#diag">향 매칭 진단</a>
     <a href="#routine">루틴 가이드</a>
@@ -58,10 +58,10 @@
         <a href="#routine" class="btn btn-ghost"><span class="play">▶</span> 1분 루틴 알아보기</a>
       </div>
       <ul class="trust-row">
-        <li><i>🌿</i><span>100% 천연<br>에센셜 오일</span></li>
-        <li><i>⚗️</i><span>아로마 실무<br>전문가 블렌딩</span></li>
-        <li><i>🌱</i><span>국내 제조<br>&amp; 클린 처방</span></li>
-        <li><i>🧪</i><span>안전성 테스트<br>완료</span></li>
+        <li><span class="ic-line" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21c8 0 14-5 14-15C9 6 5 12 5 21z"/><path d="M5 21c3-7 7-10 11-12"/></svg></span><span>천연 유래<br>향료 기반</span></li>
+        <li><span class="ic-line" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6M10 3v5l-4.6 8.6A2 2 0 007.2 20h9.6a2 2 0 001.8-3.4L14 8V3"/><path d="M7.6 14h8.8"/></svg></span><span>아로마 실무<br>전문가 블렌딩</span></li>
+        <li><span class="ic-line" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-9"/><path d="M12 12C12 8 9 6 5 6c0 4 3 6 7 6z"/><path d="M12 14c0-3 2.5-5 6-5 0 3.5-2.5 5-6 5z"/></svg></span><span>국내 제조<br>&amp; 소량 블렌딩</span></li>
+        <li><span class="ic-line" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.8-7 9-4-1.2-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg></span><span>사용법 카드<br>동봉</span></li>
       </ul>
     </div>
 
@@ -82,12 +82,12 @@
         </div>
         <div class="lid float-slow"></div>
         <div class="rx float-slow">
-          <div class="rx-head">오늘의 처방</div>
+          <div class="rx-head">오늘의 스위치</div>
           <div class="rx-row"><b>상황</b><span>중요한 발표 전</span></div>
           <div class="rx-row"><b>무드</b><span>정돈된 집중</span></div>
           <div class="rx-row"><b>향</b><span><em>Calm Basil</em></span></div>
           <div class="rx-quote">숨을 고르고,<br>나의 중심으로 돌아가는 시간</div>
-          <div class="rx-seal">APOTHECARY</div>
+          <div class="rx-seal">ROUTINE KIT</div>
         </div>
       </div>
     </div>
@@ -95,85 +95,97 @@
   <div class="scroll-cue" aria-hidden="true"><span></span></div>
 </section>
 
-<!-- ============ THREE PANELS ============ -->
-<section class="panels wrap" id="product">
-  <!-- Panel 1: diagnostic teaser -->
-  <article class="panel reveal">
-    <h3>지금, 나의 회의 모드는?</h3>
-    <p class="panel-sub">3가지 질문으로 오늘의 나에게 맞는 향을 추천해드려요.</p>
-    <div class="mini-q">
-      <span class="mini-ic">☉</span>
-      <div><b>지금 내 컨디션은?</b><small>또렷 · 무거움 · 산만</small></div>
-    </div>
-    <div class="mini-q">
-      <span class="mini-ic">◈</span>
-      <div><b>오늘 회의의 목적은?</b><small>발표·설득 · 아이디어 정리 · 중요한 결정</small></div>
-    </div>
-    <div class="mini-q">
-      <span class="mini-ic">◐</span>
-      <div><b>원하는 상태는?</b><small>정돈된 집중 · 또렷한 각성</small></div>
-    </div>
-    <a href="#diag" class="btn btn-primary block">3문항 진단 시작하기 →</a>
-  </article>
+<!-- ============ MOMENT (empathy) ============ -->
+<section class="moment reveal" id="moment">
+  <div class="wrap">
+    <span class="eyebrow">그 순간</span>
+    <p class="moment-lead">중요한 피칭 직전.<br><em>스스로를 다잡고 싶은</em> 그 3분.</p>
+    <p class="moment-body">커피는 이미 세 잔. 심호흡은 자리에서 하기 어색하고, 명상 앱은 지금 이 순간엔 켤 수 없다. 영업·컨설턴트에게 그 순간은 매주 몇 번씩 온다. 마음약방은 그 3분을 위한 나만의 준비 의식을 손안에 담았다.</p>
+  </div>
+</section>
 
-  <!-- Panel 2: routine -->
-  <article class="panel reveal" id="routine">
-    <h3>1분 향 루틴</h3>
-    <p class="panel-sub">간단한 3단계로, 나를 최적의 모드로 전환하세요.</p>
-    <div class="routine">
+<!-- ============ PRODUCT + ROUTINE (one job) ============ -->
+<section class="prod-sec wrap reveal" id="product">
+  <div class="prod-grid">
+    <div class="prod-copy">
+      <span class="eyebrow">제품</span>
+      <h2>흡입 스틱 +<br>1분 호흡 카드</h2>
+      <p class="lead">피부에 바르지 않는 흡입 전용. 향을 코앞에 대고 맡은 뒤, 카드의 1분 호흡을 따라간다. 향과 행동을 하나로 묶은 준비 루틴.</p>
+    </div>
+    <div class="routine" id="routine">
       <div class="step">
-        <div class="step-ic ic-open"><span></span><span></span></div>
+        <div class="step-ill" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="18" y="19" width="12" height="23" rx="6"/>
+            <rect x="19" y="7" width="10" height="8.5" rx="4" class="lift"/>
+            <path d="M32 10l3.5-2.2M33.5 14l3.5-1.4" class="lift"/>
+          </svg>
+        </div>
         <b>01 · 열고</b><small>스틱을 열고 코앞에 가져와요.</small>
       </div>
-      <div class="arrow">→</div>
+      <div class="arrow" aria-hidden="true">→</div>
       <div class="step">
-        <div class="step-ic ic-inhale"><i></i></div>
+        <div class="step-ill" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M31 9c-6.5 2-10.5 7.5-10.5 14.5 0 5 3 8.5 3 12.5M20.5 23h-4.5"/>
+            <path class="wave" d="M8 17c2.2-1.2 4.4-1.2 6.5 0"/>
+            <path class="wave" d="M7 23c2.2-1.2 4.4-1.2 6.5 0"/>
+            <path class="wave" d="M8 29c2.2-1.2 4.4-1.2 6.5 0"/>
+          </svg>
+        </div>
         <b>02 · 향을 맡고</b><small>천천히 숨을 들이쉬며 3번 호흡해요.</small>
       </div>
-      <div class="arrow">→</div>
+      <div class="arrow" aria-hidden="true">→</div>
       <div class="step">
-        <div class="step-ic ic-breathe"><em></em></div>
+        <div class="step-ill" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="24" cy="16" r="5"/>
+            <path d="M13 39c0-6.5 5-11 11-11s11 4.5 11 11"/>
+            <circle class="calm" cx="24" cy="24" r="20"/>
+          </svg>
+        </div>
         <b>03 · 모드 전환</b><small>1분간 집중하며 회의를 시작하세요.</small>
       </div>
     </div>
-  </article>
+  </div>
+</section>
 
-  <!-- Panel 3: scent recs -->
-  <article class="panel reveal">
-    <h3>나에게 맞는 향 추천</h3>
-    <p class="panel-sub">오늘의 당신에게 필요한 향을 찾아보세요.</p>
-    <div class="scents">
-      <div class="scent s-a">
-        <div class="scent-ic">🍃</div>
-        <div class="scent-name">CALM BASIL</div>
-        <p>긴장되는 순간, 마음을<br>정돈하고 싶을 때</p>
-        <div class="tags"><span>정돈</span><span>여유</span><span>차분한 집중</span></div>
-      </div>
-      <div class="scent s-b">
-        <div class="scent-ic">🌿</div>
-        <div class="scent-name">CLEAR MINT</div>
-        <p>산만한 생각을 정리하고<br>집중력을 높이고 싶을 때</p>
-        <div class="tags"><span>집중</span><span>선명</span><span>사고 정리</span></div>
-      </div>
-      <div class="scent s-c">
-        <div class="scent-ic">🍊</div>
-        <div class="scent-name">ENERGY CITRUS</div>
-        <p>활력을 끌어올리고<br>자신감을 높이고 싶을 때</p>
-        <div class="tags"><span>활력</span><span>자신감</span><span>리프레시</span></div>
-      </div>
+<!-- ============ THREE SCENTS (one job) ============ -->
+<section class="scents-sec wrap reveal">
+  <div class="sec-head">
+    <span class="eyebrow center">세 가지 향</span>
+    <h2>오늘 필요한 스위치를 고르세요</h2>
+  </div>
+  <div class="scents">
+    <div class="scent s-a">
+      <span class="scent-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V6"/><path d="M12 12c-1.6-3-5.2-3.6-8.2-3 .5 3.2 4.2 4.7 8.2 3z"/><path d="M12 9c1.4-2.7 4.4-3.3 7-2.7 0 2.9-3 4.2-7 2.7z"/><path d="M12 15.5c-1.4-2.4-4-3-6.4-2.4 .4 2.6 3.2 3.7 6.4 2.4z"/></svg></span>
+      <div class="scent-name">CALM BASIL</div>
+      <p>긴장되는 순간, 마음을 정돈하고 싶을 때</p>
+      <div class="tags"><span>정돈</span><span>여유</span><span>차분한 집중</span></div>
     </div>
-  </article>
+    <div class="scent s-b">
+      <span class="scent-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V5"/><path d="M12 11.5c-1-4-5-5-8.4-4.3 .3 4 4.3 5.8 8.4 4.3z"/><path d="M12 8c1-3.4 4.4-4.4 7.2-3.7 0 3.4-3.2 5-7.2 3.7z"/></svg></span>
+      <div class="scent-name">CLEAR MINT</div>
+      <p>생각을 또렷하게 정리하고 싶을 때</p>
+      <div class="tags"><span>집중</span><span>선명</span><span>사고 정리</span></div>
+    </div>
+    <div class="scent s-c">
+      <span class="scent-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13.5a8 8 0 0116 0z"/><path d="M4 13.5h16"/><path d="M12 5.5v8M7.4 8.6L12 13.5M16.6 8.6L12 13.5"/><path d="M13.5 5c1-1.3 2.8-1.5 4.2-1-.2 1.6-1.7 2.5-3.4 2"/></svg></span>
+      <div class="scent-name">ENERGY CITRUS</div>
+      <p>분위기를 산뜻하게 바꾸고 싶을 때</p>
+      <div class="tags"><span>산뜻함</span><span>전환</span><span>리프레시</span></div>
+    </div>
+  </div>
 </section>
 
 <!-- ============ STATS + QUOTE ============ -->
 <section class="stats wrap reveal" id="story">
   <div class="quote">
     <p>"향은 마음의 언어입니다.<br>당신의 하루를 정돈하는 작은 약방이 되겠습니다."</p>
-    <span class="leaf-mark">🌾</span>
   </div>
-  <div class="stat"><span class="num" data-to="10" data-suffix="+">0</span><small>아로마 실무 경력 (년)</small></div>
-  <div class="stat"><span class="num" data-to="100" data-suffix="+">0</span><small>블렌딩 레시피</small></div>
-  <div class="stat"><span class="num" data-to="98" data-suffix="%">0</span><small>누적 고객 만족도</small></div>
+  <div class="stat"><span class="num" data-to="5" data-suffix="+">0</span><small>아로마 실무 경력 (년)</small></div>
+  <div class="stat"><span class="num" data-to="3" data-suffix="">0</span><small>v1 블렌드</small></div>
+  <div class="stat"><span class="num" data-to="1" data-suffix="분">0</span><small>호흡 카드</small></div>
   <div class="stat made"><b>MADE IN KOREA</b><small>한국에서 정성 제조</small></div>
 </section>
 
@@ -199,7 +211,8 @@
         <div class="qt"><span class="qn">Q2</span> 그 순간, 원하는 나의 상태는? <em>주 결정</em></div>
         <div class="opts">
           <button class="opt" data-w="a">정돈된 집중</button>
-          <button class="opt" data-w="b">또렷한 각성</button>
+          <button class="opt" data-w="b">또렷한 모드</button>
+          <button class="opt" data-w="c">산뜻한 리프레시</button>
         </div>
       </div>
       <div class="q" data-q="3">
@@ -207,6 +220,7 @@
         <div class="opts">
           <button class="opt" data-w="a">은은하고 부드러운</button>
           <button class="opt" data-w="b">상큼하고 시원한</button>
+          <button class="opt" data-w="c">밝고 산뜻한</button>
           <button class="opt" data-w="?">잘 모르겠어요</button>
         </div>
       </div>
@@ -214,7 +228,7 @@
         <button class="btn btn-primary" id="diagBtn">내 스위치 보기 →</button>
         <span id="diagHint">세 질문에 모두 답해주세요</span>
       </div>
-      <div class="result" id="diagResult">
+      <div class="result" id="diagResult" aria-live="polite">
         <span class="eyebrow">당신의 스위치</span>
         <div class="rcard" id="rcard">
           <div class="rswatch"></div>
@@ -234,7 +248,7 @@
   <span class="eyebrow center">성분 &amp; 원료</span>
   <h2>왜 마음약방</h2>
   <div class="trust-cards">
-    <div class="tcard"><span class="tk">MAKER</span><h3>업계 10년 실무</h3><p>아로마 제품 기획·제조를 오래 다뤄온 사람이 직접 블렌딩합니다.</p></div>
+    <div class="tcard"><span class="tk">MAKER</span><h3>업계 5년 실무</h3><p>아로마 제품 기획·제조를 오래 다뤄온 사람이 직접 블렌딩합니다.</p></div>
     <div class="tcard"><span class="tk">MATERIAL</span><h3>천연 향료</h3><p>EU IFRA 기준을 따른 천연 유래 향료. 흡입 전용으로 설계했습니다.</p></div>
     <div class="tcard"><span class="tk">MADE IN</span><h3>국내 자체 제조</h3><p>보유 제조 설비에서 소량 정성 제작. 매 배치를 직접 관리합니다.</p></div>
   </div>
@@ -253,7 +267,7 @@
   <span class="eyebrow center">FAQ</span>
   <h2>자주 묻는 질문</h2>
   <details><summary>어떻게 사용하나요?</summary><p>스틱을 열어 코앞에 대고 천천히 향을 맡은 뒤, 동봉된 카드의 1분 호흡을 따라가면 됩니다. 피부에 바르지 않는 흡입 전용이라 자리에서도 티 나지 않게 쓸 수 있어요.</p></details>
-  <details><summary>세 가지 향, 뭐가 다른가요?</summary><p>Calm Basil은 정돈된 결, Clear Mint는 또렷한 집중의 결, Energy Citrus는 활력의 결입니다. 위 향 매칭 진단으로 지금 상황에 맞는 향을 추천받을 수 있어요.</p></details>
+  <details><summary>세 가지 향, 뭐가 다른가요?</summary><p>Calm Basil은 정돈된 결, Clear Mint는 또렷한 결, Energy Citrus는 산뜻한 리프레시의 결입니다. 위 향 매칭 진단으로 지금 상황에 맞는 향을 추천받을 수 있어요.</p></details>
   <details><summary>향이 너무 강하지 않나요?</summary><p>코앞에서 짧게 맡는 용도로 농도를 맞췄습니다. 주변에 퍼지지 않도록 설계했어요.</p></details>
   <details><summary>배송은 언제 되나요?</summary><p>사전 주문은 수량 한정으로 받고, 제작 완료 후 순차 발송합니다. 주문 시 예상 일정을 안내드려요.</p></details>
 </section>
@@ -277,8 +291,8 @@
         <select id="pf-blend" name="blend">
           <option value="">진단 후 자동 선택</option>
           <option value="a">Calm Basil · 정돈된 집중</option>
-          <option value="b">Clear Mint · 또렷한 각성</option>
-          <option value="c">Energy Citrus · 활력</option>
+          <option value="b">Clear Mint · 또렷한 모드</option>
+          <option value="c">Energy Citrus · 산뜻한 리프레시</option>
         </select>
       </div>
       <input type="hidden" name="diag" id="pf-diag" value="" />
@@ -298,7 +312,7 @@
       <a href="#product">제품소개</a><a href="#diag">향 매칭 진단</a><a href="#routine">루틴 가이드</a><a href="#trust">성분 &amp; 원료</a><a href="#story">스토리</a>
     </nav>
   </div>
-  <p class="disclaimer wrap">마음약방은 향을 활용한 기분 전환·준비 루틴 제품입니다. 질병의 예방·치료를 목적으로 하지 않으며, 의약품이 아닙니다. © 2026 마음약방 · korrio093@gmail.com</p>
+  <p class="disclaimer wrap">마음약방은 향을 활용한 기분 전환·준비 루틴 제품입니다. 의약품·의료기기가 아닙니다. © 2026 마음약방 · korrio093@gmail.com</p>
 </footer>
 
 <!-- floating buy card -->
