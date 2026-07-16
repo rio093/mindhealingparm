@@ -19,11 +19,8 @@ export default function Reveal({ children, className = "", id, as = "section", o
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setInView(true);
-      onEnter?.();
-      return;
-    }
+    // reduced-motion은 CSS(@media prefers-reduced-motion)가 이미 항상 보이게 처리한다.
+    // 여기선 관측만 — setState는 콜백 안에서만 일어난다.
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

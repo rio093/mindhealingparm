@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Reveal from "./Reveal";
 import { BLENDS, useLanding, type Blend } from "./LandingProvider";
 import { track } from "@/lib/analytics";
@@ -13,14 +13,13 @@ type Status = { kind: "idle" | "ok" | "err"; msg: string };
 export default function Preorder() {
   const { blend, diag } = useLanding(); // 진단 결과를 구독
   const [email, setEmail] = useState("");
-  const [choice, setChoice] = useState<Blend | "">("");
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<Status>({ kind: "idle", msg: "" });
 
-  // 진단이 끝나면 관심 향이 자동으로 따라온다 (사용자가 바꾸면 그 선택 우선)
-  useEffect(() => {
-    if (blend) setChoice(blend);
-  }, [blend]);
+  // 사용자가 직접 고르기 전엔 진단 결과를 따라간다. 고르면 그 선택이 이긴다.
+  // (effect로 상태를 미러링하지 않고 파생 — cascading render 없음)
+  const [override, setOverride] = useState<Blend | "" | null>(null);
+  const choice: Blend | "" = override ?? blend;
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -101,7 +100,7 @@ export default function Preorder() {
               id="pf-blend"
               name="blend"
               value={choice}
-              onChange={(e) => setChoice(e.target.value as Blend | "")}
+              onChange={(e) => setOverride(e.target.value as Blend | "")}
             >
               <option value="">진단 후 자동 선택</option>
               {(Object.keys(BLENDS) as Blend[]).map((k) => (
