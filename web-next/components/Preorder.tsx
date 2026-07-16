@@ -21,6 +21,10 @@ export default function Preorder() {
   const [override, setOverride] = useState<Blend | "" | null>(null);
   const choice: Blend | "" = override ?? blend;
 
+  // 파생: 입력하는 동안 제출 가능 여부가 바로 보인다
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const canSubmit = emailValid && !sending;
+
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (sending) return; // in-flight 가드
@@ -111,7 +115,7 @@ export default function Preorder() {
             </select>
           </div>
 
-          <button type="submit" className="btn btn-primary block" disabled={sending}>
+          <button type="submit" className="btn btn-primary block" disabled={!canSubmit}>
             {sending ? "전송 중…" : "사전 주문 신청 →"}
           </button>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { EASE } from "@/lib/motion";
 import { useMemo, useRef, useState } from "react";
 import Reveal from "./Reveal";
 import CtaLink from "./CtaLink";
@@ -23,7 +25,7 @@ const QUESTIONS: { id: QId; label: string; note?: string; opts: Choice[] }[] = [
   {
     id: 2,
     label: "그 순간, 원하는 나의 상태는?",
-    note: "주 결정",
+    note: "이 답이 향을 결정해요",
     opts: [
       { w: "a", t: "정돈된 집중" },
       { w: "b", t: "또렷한 모드" },
@@ -43,37 +45,67 @@ const QUESTIONS: { id: QId; label: string; note?: string; opts: Choice[] }[] = [
 ];
 
 export default function Diagnostic() {
-  // State: 문항별 선택 하나. 결과는 여기서 파생 — 별도 결과 상태를 두지 않는다.
+  // 한 번에 한 문항. step·선택·방향만 상태, 나머지는 파생.
+  const [step, setStep] = useState(0);
+  const [dir, setDir] = useState(1);
   const [picked, setPicked] = useState<Partial<Record<QId, Choice>>>({});
-  const [shown, setShown] = useState(false);
+  const [finished, setFinished] = useState(false);
   const { setResult } = useLanding();
   const resultRef = useRef<HTMLDivElement>(null);
+  const reduce = useReducedMotion();
 
-  const complete = QUESTIONS.every((q) => picked[q.id] !== undefined);
+  const q = QUESTIONS[step];
+  // 라벨이 "질문 1/3"이면 바도 1/3 — 첫 화면에 빈 바가 뜨지 않게
+  const progress = finished ? 100 : ((step + 1) / QUESTIONS.length) * 100;
 
-  // 파생 상태: Q2 = 주 배정축, Q3 = 선호 불일치 신호(표준화 검증용)
   const derived = useMemo(() => {
     const q2 = picked[2]?.w;
     if (!q2 || q2 === "0" || q2 === "?") return null;
     const blend = q2 as Blend;
     const q3 = picked[3]?.w;
     const mismatch = q3 !== undefined && q3 !== "?" && q3 !== blend;
-    const diag = `q1=${picked[1]?.t} q2=${picked[2]?.t} q3=${picked[3]?.t} blend=${blend} mismatch=${mismatch}`;
-    return { blend, mismatch, diag };
+    return { blend, mismatch };
   }, [picked]);
 
-  function show() {
-    if (!complete || !derived) return;
-    setShown(true);
-    setResult(derived.blend, derived.diag); // 폼이 이 상태를 구독
-    track("진단완료", {
-      blend: derived.blend,
-      mismatch: String(derived.mismatch),
-      preference: picked[3]?.w ?? "none",
-    });
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    resultRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
+  function choose(o: Choice) {
+    const next = { ...picked, [q.id]: o };
+    setPicked(next);
+
+    if (step < QUESTIONS.length - 1) {
+      setDir(1);
+      setStep(step + 1);
+      return;
+    }
+
+    // 마지막 답 → next로 직접 계산 (setPicked 반영 전)
+    const q2 = next[2]?.w;
+    if (!q2 || q2 === "0" || q2 === "?") return;
+    const blend = q2 as Blend;
+    const q3 = next[3]?.w;
+    const mismatch = q3 !== undefined && q3 !== "?" && q3 !== blend;
+    const diag = `q1=${next[1]?.t} q2=${next[2]?.t} q3=${next[3]?.t} blend=${blend} mismatch=${mismatch}`;
+
+    setFinished(true);
+    setResult(blend, diag);
+    track("진단완료", { blend, mismatch: String(mismatch), preference: q3 ?? "none" });
+    requestAnimationFrame(() =>
+      resultRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" }),
+    );
   }
+
+  function restart() {
+    setDir(-1);
+    setPicked({});
+    setStep(0);
+    setFinished(false);
+  }
+
+  const slide = {
+    enter: (d: number) => ({ opacity: 0, x: reduce ? 0 : d * 28 }),
+    center: { opacity: 1, x: 0 },
+    exit: (d: number) => ({ opacity: 0, x: reduce ? 0 : d * -28 }),
+  };
+  const dur = reduce ? 0 : 0.28;
 
   return (
     <section className="diag-sec" id="diag">
@@ -85,67 +117,108 @@ export default function Diagnostic() {
         </Reveal>
 
         <Reveal as="div" className="diag">
-          {QUESTIONS.map((q) => (
-            <div className="q" key={q.id}>
-              <div className="qt">
-                <span className="qn">Q{q.id}</span> {q.label}
-                {q.note && <em>{q.note}</em>}
-              </div>
-              <div className="opts">
-                {q.opts.map((o) => {
-                  const selected = picked[q.id]?.t === o.t;
-                  return (
-                    <button
-                      key={o.t}
-                      className={`opt ${selected ? "sel" : ""}`}
-                      aria-pressed={selected}
-                      onClick={() => setPicked((p) => ({ ...p, [q.id]: o }))}
-                    >
-                      {o.t}
-                    </button>
-                  );
-                })}
-              </div>
+          <div className="diag-progress">
+            <div className="diag-progress-head">
+              <span>{finished ? "완료" : `질문 ${step + 1} / ${QUESTIONS.length}`}</span>
+              {!finished && step > 0 && (
+                <button
+                  className="diag-back"
+                  onClick={() => {
+                    setDir(-1);
+                    setStep(step - 1);
+                  }}
+                >
+                  ← 이전
+                </button>
+              )}
             </div>
-          ))}
-
-          <div className="diag-actions">
-            <button className="btn btn-primary" onClick={show}>
-              내 스위치 보기 →
-            </button>
-            <span id="diagHint">
-              {complete ? "준비 완료 — 결과를 확인하세요" : "세 질문에 모두 답해주세요"}
-            </span>
+            <div
+              className="diag-track"
+              role="progressbar"
+              aria-valuenow={Math.round(progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              {/* 진행률도 모션: 스텝마다 부드럽게 채워짐 */}
+              <motion.div
+                className="diag-fill"
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: reduce ? 0 : 0.4, ease: EASE }}
+              />
+            </div>
           </div>
 
-          <div
-            className={`result ${shown && derived ? "show" : ""}`}
-            ref={resultRef}
-            aria-live="polite"
-          >
-            {shown && derived && (
-              <>
-                <span className="eyebrow">당신의 스위치</span>
-                <div className={`rcard ${derived.blend}`}>
-                  <div className="rswatch" />
-                  <div className="rmeta">
-                    <h3>{BLENDS[derived.blend].name}</h3>
-                    <p>{BLENDS[derived.blend].desc}</p>
+          <AnimatePresence mode="wait" custom={dir} initial={false}>
+            {!finished ? (
+              <motion.div
+                key={step}
+                custom={dir}
+                variants={slide}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: dur, ease: EASE }}
+              >
+                <div className="qt">
+                  <span className="qn">Q{q.id}</span> {q.label}
+                  {q.note && <em>{q.note}</em>}
+                </div>
+                <div className="opts">
+                  {q.opts.map((o) => {
+                    const selected = picked[q.id]?.t === o.t;
+                    return (
+                      <motion.button
+                        key={o.t}
+                        className={`opt ${selected ? "sel" : ""}`}
+                        aria-pressed={selected}
+                        onClick={() => choose(o)}
+                        whileHover={reduce ? undefined : { y: -2 }}
+                        whileTap={reduce ? undefined : { scale: 0.98 }}
+                      >
+                        {o.t}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            ) : (
+              derived && (
+                <motion.div
+                  key="result"
+                  ref={resultRef}
+                  aria-live="polite"
+                  initial={{ opacity: 0, y: reduce ? 0 : 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
+                >
+                  <span className="eyebrow">당신의 스위치</span>
+                  <motion.div
+                    className={`rcard ${derived.blend}`}
+                    initial={{ scale: reduce ? 1 : 0.97 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.05, type: reduce ? false : "spring", stiffness: 260, damping: 22 }}
+                  >
+                    <div className="rswatch" />
+                    <div className="rmeta">
+                      <h3>{BLENDS[derived.blend].name}</h3>
+                      <p>{BLENDS[derived.blend].desc}</p>
+                    </div>
+                  </motion.div>
+                  <div className="ractions">
+                    <CtaLink href="#preorder" className="btn btn-primary" loc="result-preorder">
+                      이 스위치로 사전 주문 →
+                    </CtaLink>
+                    <button className="btn btn-ghost" onClick={restart}>
+                      다시 진단하기
+                    </button>
                   </div>
-                </div>
-                <div className="ractions">
-                  <CtaLink href="#preorder" className="btn btn-primary" loc="result-preorder">
-                    이 스위치로 사전 주문 →
-                  </CtaLink>
-                  <span id="rmismatch">
-                    {derived.mismatch
-                      ? "취향은 다른 결이지만, 지금 필요한 상태엔 이 쪽을 추천해요."
-                      : ""}
-                  </span>
-                </div>
-              </>
+                  {derived.mismatch && (
+                    <p id="rmismatch">취향은 다른 결이지만, 지금 필요한 상태엔 이 쪽을 추천해요.</p>
+                  )}
+                </motion.div>
+              )
             )}
-          </div>
+          </AnimatePresence>
         </Reveal>
       </div>
     </section>

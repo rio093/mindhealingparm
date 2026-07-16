@@ -1,3 +1,7 @@
+"use client";
+
+import { motion, useReducedMotion } from "motion/react";
+import { EASE } from "@/lib/motion";
 import Reveal from "./Reveal";
 
 const CARDS = [
@@ -19,17 +23,23 @@ const CARDS = [
 ];
 
 export default function Trust() {
+  const reduce = useReducedMotion();
+  const item = {
+    hidden: { opacity: 0, y: reduce ? 0 : 16 },
+    show: { opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.5, ease: EASE } },
+  };
+
   return (
-    <Reveal className="trust-sec wrap" id="trust">
+    <Reveal className="trust-sec wrap" id="trust" stagger>
       <span className="eyebrow center">성분 &amp; 원료</span>
       <h2>왜 마음약방</h2>
       <div className="trust-cards">
         {CARDS.map((c) => (
-          <div className="tcard" key={c.k}>
+          <motion.div className="tcard" key={c.k} variants={item}>
             <span className="tk">{c.k}</span>
             <h3>{c.h}</h3>
             <p>{c.p}</p>
-          </div>
+          </motion.div>
         ))}
       </div>
     </Reveal>

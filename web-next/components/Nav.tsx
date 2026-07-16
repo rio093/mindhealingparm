@@ -1,7 +1,9 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@/lib/analytics";
+import { EASE } from "@/lib/motion";
 
 const LINKS = [
   { href: "#product", label: "제품소개" },
@@ -16,6 +18,7 @@ export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const hambRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
+  const reduce = useReducedMotion();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -75,28 +78,41 @@ export default function Nav() {
         </button>
       </div>
 
-      <nav className="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴" aria-hidden={!open}>
-        {LINKS.map((l, i) => (
-          <a
-            key={l.href}
-            href={l.href}
-            ref={i === 0 ? firstLinkRef : undefined}
-            onClick={() => setOpen(false)}
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.nav
+            className="mobile-menu"
+            id="mobileMenu"
+            aria-label="모바일 메뉴"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.28, ease: EASE }}
+            style={{ overflow: "hidden" }}
           >
-            {l.label}
-          </a>
-        ))}
-        <a
-          href="#preorder"
-          className="btn btn-primary block"
-          onClick={() => {
-            setOpen(false);
-            track("CTA", { loc: "nav-mobile" });
-          }}
-        >
-          사전 주문
-        </a>
-      </nav>
+            {LINKS.map((l, i) => (
+              <a
+                key={l.href}
+                href={l.href}
+                ref={i === 0 ? firstLinkRef : undefined}
+                onClick={() => setOpen(false)}
+              >
+                {l.label}
+              </a>
+            ))}
+            <a
+              href="#preorder"
+              className="btn btn-primary block"
+              onClick={() => {
+                setOpen(false);
+                track("CTA", { loc: "nav-mobile" });
+              }}
+            >
+              사전 주문
+            </a>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

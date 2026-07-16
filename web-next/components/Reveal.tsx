@@ -1,48 +1,74 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { motion, useReducedMotion, type Variants } from "motion/react";
+import { EASE } from "@/lib/motion";
+import type { ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
   className?: string;
   id?: string;
   as?: "section" | "div";
-  /** 화면에 들어왔을 때 1회 호출 (예: 카운트업 시작) */
+  /** 화면에 처음 들어왔을 때 1회 (예: 카운트업 시작) */
   onEnter?: () => void;
+  /** 자식을 순차로 등장시킬 때 */
+  stagger?: boolean;
 };
 
-/** 스크롤 리빌. reduced-motion이면 즉시 표시. */
-export default function Reveal({ children, className = "", id, as = "section", onEnter }: Props) {
-  const ref = useRef<HTMLElement>(null);
-  const [inView, setInView] = useState(false);
+/** 스크롤 진입 모션. reduced-motion이면 모션 없이 즉시 표시. */
+export default function Reveal({
+  children,
+  className = "",
+  id,
+  as = "section",
+  onEnter,
+  stagger = false,
+}: Props) {
+  const reduce = useReducedMotion();
+  const M = as === "section" ? motion.section : motion.div;
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    // reduced-motion은 CSS(@media prefers-reduced-motion)가 이미 항상 보이게 처리한다.
-    // 여기선 관측만 — setState는 콜백 안에서만 일어난다.
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          onEnter?.();
-          io.disconnect();
-        }
-      },
-      { threshold: 0.15 },
-    );
-    io.observe(el);
-    return () => io.disconnect();
-    // onEnter는 마운트 시점에 고정 — 의도적으로 deps 제외
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const variants: Variants = {
+    hidden: { opacity: 0, y: reduce ? 0 : 20 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: reduce
+        ? { duration: 0 }
+        : {
+            duration: 0.55,
+            ease: EASE,
+            ...(stagger ? { staggerChildren: 0.09, delayChildren: 0.05 } : {}),
+          },
+    },
+  };
 
-  const cls = `reveal ${inView ? "in" : ""} ${className}`.trim();
-  const Tag = as;
   return (
-    // @ts-expect-error — section/div 모두 HTMLElement ref 허용
-    <Tag ref={ref} id={id} className={cls}>
+    <M
+      id={id}
+      className={className}
+      variants={variants}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, amount: 0.15 }}
+      onViewportEnter={() => onEnter?.()}
+    >
       {children}
-    </Tag>
+    </M>
+  );
+}
+
+/** Reveal(stagger)의 자식으로 두면 순차 등장 */
+export function RevealItem({ children, className }: { children: ReactNode; className?: string }) {
+  const reduce = useReducedMotion();
+  return (
+    <motion.div
+      className={className}
+      variants={{
+        hidden: { opacity: 0, y: reduce ? 0 : 14 },
+        show: { opacity: 1, y: 0, transition: { duration: reduce ? 0 : 0.5, ease: EASE } },
+      }}
+    >
+      {children}
+    </motion.div>
   );
 }

@@ -19,6 +19,11 @@ export default function RootLayout({
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css"
         />
+        {/* motion은 등장 전 상태(opacity:0)를 SSR에 심는다.
+            JS가 죽으면 그대로 안 보이므로, JS 없을 때는 강제로 보이게 한다. */}
+        <noscript>
+          <style>{`[style*="opacity:0"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
       </head>
       <body>
         {children}
