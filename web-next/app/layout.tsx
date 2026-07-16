@@ -22,10 +22,10 @@ export default function RootLayout({
       </head>
       <body>
         {children}
-        {/* 분석: Plausible (쿠키리스). 배포 후 data-domain을 실제 도메인으로 교체 */}
+        {/* 분석: Plausible (쿠키리스). 커스텀 도메인 붙이면 data-domain 교체 */}
         <Script
           defer
-          data-domain="REPLACE_WITH_YOUR_DOMAIN"
+          data-domain="maum-yakbang-next.vercel.app"
           src="https://plausible.io/js/script.tagged-events.js"
           strategy="afterInteractive"
         />
