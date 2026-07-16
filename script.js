@@ -108,24 +108,6 @@
     });
   }
 
-  /* ---- aroma particles ---- */
-  (function aroma() {
-    if (reduce) return;
-    var box = document.querySelector('.aroma');
-    if (!box) return;
-    var N = window.innerWidth < 600 ? 8 : 16;
-    for (var i = 0; i < N; i++) {
-      var s = document.createElement('span');
-      s.style.left = Math.random() * 100 + 'vw';
-      var dur = 9 + Math.random() * 12;
-      s.style.animationDuration = dur + 's';
-      s.style.animationDelay = (-Math.random() * dur) + 's';
-      var sz = 5 + Math.random() * 10;
-      s.style.width = s.style.height = sz + 'px';
-      box.appendChild(s);
-    }
-  })();
-
   /* ---- diagnostic ---- */
   var diag = document.getElementById('diag') && document.querySelector('.diag');
   if (diag) {
