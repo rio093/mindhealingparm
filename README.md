@@ -4,6 +4,7 @@
 **An open-source landing page template for a pre-meeting scent ritual, plus an OpenAI-powered ritual-card module**
 
 [![CI](https://github.com/rio093/mindhealingparm/actions/workflows/ci.yml/badge.svg)](https://github.com/rio093/mindhealingparm/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/%40maum%2Fritual-card)](https://www.npmjs.com/package/@maum/ritual-card)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Live demo](https://img.shields.io/badge/demo-mindhealingparm.vercel.app-111)](https://mindhealingparm.vercel.app)
 
@@ -18,7 +19,7 @@
 마음약방은 중요한 미팅, 발표, 클라이언트 피칭 직전에 쓰는 흡입 전용 향 스틱과 1분 호흡 카드 기반의 준비 루틴 브랜드입니다. 이 저장소는 그 브랜드의 v1 랜딩 페이지를 **누구나 가져다 쓸 수 있는 형태**로 정리한 것입니다.
 
 - **랜딩 페이지 템플릿**: 빌드 도구 없이 동작하는 정적 HTML·CSS·JS. 3문항 진단 퀴즈, 사전 주문 관심 등록 폼, Plausible 이벤트 추적이 들어 있습니다. 문구와 블렌드만 바꾸면 향, 차, 캔들, 루틴 제품 등 "상황 전환" 컨셉의 제품에 그대로 쓸 수 있습니다.
-- **`@maum/ritual-card` 모듈**: 진단 답변을 받아 OpenAI Responses API로 개인화된 1분 루틴 카드를 생성합니다. 의학·신체지표 표현을 차단하는 클레임 가드와 규칙 기반 폴백이 내장되어 있어, API 키가 없어도 페이지가 깨지지 않습니다. 웰니스 카피 검사기로 단독 사용도 가능합니다.
+- **`@maum/ritual-card` 모듈** (`npm install @maum/ritual-card`): 진단 답변을 받아 OpenAI Responses API로 개인화된 1분 루틴 카드를 생성합니다. 의학·신체지표 표현을 차단하는 클레임 가드와 규칙 기반 폴백이 내장되어 있어, API 키가 없어도 페이지가 깨지지 않습니다. 웰니스 카피 검사기로 단독 사용도 가능합니다.
 - **Next.js 리뉴얼(`web-next/`)**: 같은 디자인 시스템을 React 상태와 motion 애니메이션으로 다시 구현한 버전입니다. 정적 버전과 Next 버전 중 편한 쪽을 고르세요.
 
 ### 빠른 시작
@@ -41,7 +42,7 @@ index.html / styles.css / script.js   정적 랜딩 페이지 (배포 대상)
 api/ritual-card.js                    Vercel 서버리스 함수 — 모듈을 HTTP로 노출
 packages/ritual-card/                 @maum/ritual-card 모듈 (테스트·CLI 포함)
 web-next/                             Next.js 리뉴얼 (선택)
-examples/                             모듈 사용 예시
+examples/                             모듈 사용 예시 (Node, 브라우저, Next.js, Express, 카피 린트 Action)
 .github/                              CI, 이슈·PR 템플릿
 ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 ```
@@ -84,7 +85,7 @@ ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 Maum Yakbang ("mind pharmacy") is a pre-meeting preparation ritual brand: an inhalation-only scent stick and a one-minute breathing card, used right before an important meeting, presentation, or client pitch. This repository turns the brand's v1 landing page into something **anyone can fork and reuse**.
 
 - **Landing page template**: static HTML, CSS, and JavaScript with no build step. Includes a three-question matching quiz, a pre-order interest form, and Plausible event tracking. Swap the copy and the blends and it works for any "switch into a state" product — scent, tea, candles, routine kits.
-- **`@maum/ritual-card` module**: takes quiz answers and generates a personalised one-minute ritual card through the OpenAI Responses API. A built-in claim guard blocks medical and body-metric language, and a rule-based fallback keeps the page working without an API key. The guard can be used on its own as a wellness-copy linter.
+- **`@maum/ritual-card` module** (`npm install @maum/ritual-card`): takes quiz answers and generates a personalised one-minute ritual card through the OpenAI Responses API. A built-in claim guard blocks medical and body-metric language, and a rule-based fallback keeps the page working without an API key. The guard can be used on its own as a wellness-copy linter.
 - **Next.js renewal (`web-next/`)**: the same design system rebuilt with React state and motion animations. Pick whichever version suits you.
 
 ### Quick start
@@ -107,7 +108,7 @@ index.html / styles.css / script.js   static landing page (what gets deployed)
 api/ritual-card.js                    Vercel serverless function exposing the module over HTTP
 packages/ritual-card/                 @maum/ritual-card module (tests and CLI included)
 web-next/                             Next.js renewal (optional)
-examples/                             module usage examples
+examples/                             usage examples (Node, browser, Next.js, Express, copy-lint Action)
 .github/                              CI, issue and PR templates
 ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 ```

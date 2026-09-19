@@ -20,6 +20,11 @@ First public release. The repository changes character from a personal landing-p
 
 ## [Unreleased]
 
+### Added
+- `@maum/ritual-card` published to npm; TypeScript declarations (`src/index.d.ts`); `publishConfig` with provenance.
+- Examples: Next.js App Router route, Express server with `/check-copy`, GitHub Action copy linter built on the claim guard.
+- `publish.yml` workflow (npm trusted publishing on GitHub Release).
+
 See [ROADMAP.md](ROADMAP.md).
 
 [0.1.0]: https://github.com/rio093/mindhealingparm/releases/tag/v0.1.0

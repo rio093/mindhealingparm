@@ -1,0 +1,30 @@
+# Publishes packages/ritual-card to npm when a GitHub Release is published.
+# Uses npm trusted publishing (OIDC): no NPM_TOKEN secret needed.
+# One-time setup on npmjs.com → package → Settings → Trusted publishers:
+#   repository rio093/mindhealingparm, workflow publish.yml, environment (leave blank).
+# The first-ever publish of a new package must still be done locally (`npm publish --access public`).
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/ritual-card
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+      - run: npm test
+      - run: npm publish --access public --provenance
