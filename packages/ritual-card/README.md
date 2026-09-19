@@ -8,11 +8,11 @@ Zero runtime dependencies. Node 18+.
 
 ## Install / 설치
 
-Inside this repository the package is a workspace. To use it elsewhere, copy the `packages/ritual-card` folder or install from git:
-
 ```bash
-npm install github:rio093/mindhealingparm#main --workspace packages/ritual-card
+npm install @maum/ritual-card
 ```
+
+Inside this repository the package is a workspace, so it resolves after `npm install` at the root. TypeScript types are included.
 
 ## Usage / 사용법
 

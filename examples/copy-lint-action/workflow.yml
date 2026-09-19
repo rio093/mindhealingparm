@@ -1,0 +1,21 @@
+# examples/copy-lint-action/workflow.yml
+# Copy to .github/workflows/copy-lint.yml in any repo that ships wellness / scent / supplement copy.
+# Fails the PR when generated or hand-written copy drifts into medical claims.
+name: Copy lint
+
+on:
+  pull_request:
+    paths: ["index.html", "content/**"]
+
+jobs:
+  copy-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-save @maum/ritual-card
+      # Point it at customer-facing copy only. Docs that *describe* the rules (README, CONTRIBUTING)
+      # legitimately contain the forbidden words and will trip the linter.
+      - run: node examples/copy-lint-action/check-copy.mjs "index.html" "content/**/*.md"

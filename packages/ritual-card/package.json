@@ -5,7 +5,10 @@
   "type": "module",
   "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js",
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
     "./guard": "./src/guard.js",
     "./blends": "./src/blends.js",
     "./fallback": "./src/fallback.js"
@@ -16,7 +19,8 @@
   "files": [
     "src",
     "bin",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "test": "node --test \"test/**/*.test.js\""
@@ -38,5 +42,14 @@
     "type": "git",
     "url": "https://github.com/rio093/mindhealingparm",
     "directory": "packages/ritual-card"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "types": "./src/index.d.ts",
+  "homepage": "https://github.com/rio093/mindhealingparm/tree/main/packages/ritual-card#readme",
+  "bugs": "https://github.com/rio093/mindhealingparm/issues",
+  "author": "rio093",
+  "sideEffects": false
 }

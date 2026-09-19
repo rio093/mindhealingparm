@@ -20,6 +20,13 @@ First public release. The repository changes character from a personal landing-p
 
 ## [Unreleased]
 
+### Added
+- `@maum/ritual-card` published to npm; TypeScript declarations (`src/index.d.ts`); `publishConfig` with provenance.
+- Examples: Next.js App Router route, Express server with `/check-copy`, GitHub Action copy linter built on the claim guard.
+- `publish.yml` workflow (npm trusted publishing on GitHub Release).
+- `index.html` is now the v2 landing (v1 moved to `index.v1.html`); `docs/design/` holds the two reference studies behind it. v2: redesigned landing (OSS bar with GitHub / Documentation / Try AI module, ink arch hero, photo-card lineup, sticky ritual stack, live ritual-card demo, Korean-standard footer). Motion budget: reveal + arch expand + sticky only.
+- `api/ritual-card.js`: `ai` flag (default fallback, no OpenAI call), per-IP rate limit, origin allowlist, input enums. `SECURITY.md` threat model.
+
 See [ROADMAP.md](ROADMAP.md).
 
 [0.1.0]: https://github.com/rio093/mindhealingparm/releases/tag/v0.1.0

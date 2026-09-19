@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>마음약방 — 1분 향 스위치</title>
+<meta name="description" content="회의·발표·피칭 직전, 향으로 숨을 고르고 모드를 전환하는 흡입 향 스위치. 영업·컨설턴트를 위한 준비 루틴." />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<link rel="stylesheet" href="styles.css" />
+<!-- 분석: Plausible (쿠키리스·개인정보 친화). 커스텀 도메인 붙이면 data-domain 교체 -->
+<script defer data-domain="mindhealingparm.vercel.app" src="https://plausible.io/js/script.tagged-events.js"></script>
+<script>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}</script>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="brand-ko">마음약방</span>
+      <span class="brand-en">MAUM YAKBANG</span>
+    </a>
+    <nav class="nav-links" aria-label="주 메뉴">
+      <a href="#product">제품소개</a>
+      <a href="#diag">향 매칭 진단</a>
+      <a href="#routine">루틴 가이드</a>
+      <a href="#trust">성분 &amp; 원료</a>
+      <a href="#story">스토리</a>
+    </nav>
+    <div class="nav-right">
+      <a href="#diag" class="btn btn-cta" data-cta="nav">내 향 찾기 <span class="btn-cta-sub">3문항 진단</span></a>
+    </div>
+    <button class="hamb" id="hamb" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mobileMenu">≡</button>
+  </div>
+  <nav class="mobile-menu" id="mobileMenu" aria-hidden="true" aria-label="모바일 메뉴">
+    <a href="#product">제품소개</a>
+    <a href="#diag">향 매칭 진단</a>
+    <a href="#routine">루틴 가이드</a>
+    <a href="#trust">성분 &amp; 원료</a>
+    <a href="#story">스토리</a>
+    <a href="#preorder" class="btn btn-primary block" data-cta="nav-mobile">사전 주문</a>
+  </nav>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div class="hero-copy reveal">
+      <span class="eyebrow">FOCUS SWITCH ON</span>
+      <h1>회의 전, 나를 바꾸는<br><span class="hl">1분</span> 향 스위치</h1>
+      <p class="hero-sub">발표, 피칭, 미팅 직전.<br>향으로 숨을 고르고, 모드를 전환하세요.</p>
+      <div class="hero-cta">
+        <a href="#diag" class="btn btn-primary">내 회의 모드 찾기 <span class="dim">(3문항 진단)</span> →</a>
+        <a href="#routine" class="btn btn-ghost"><span class="play">▶</span> 1분 루틴 알아보기</a>
+      </div>
+      <ul class="trust-row">
+        <li>천연 유래 향료 기반</li>
+        <li>아로마 실무 전문가 블렌딩</li>
+        <li>국내 제조 · 소량 블렌딩</li>
+        <li>사용법 카드 동봉</li>
+      </ul>
+    </div>
+
+    <!-- CSS product scene w/ motion -->
+    <div class="hero-scene reveal" aria-hidden="true">
+      <div class="stage">
+        <div class="stone"></div>
+        <div class="inhaler float">
+          <div class="cap"></div>
+          <div class="body">
+            <span class="label-ko">마음<br>약방</span>
+            <span class="label-en">AROMA<br>INHALER</span>
+          </div>
+        </div>
+        <div class="lid float-slow"></div>
+        <div class="rx float-slow">
+          <div class="rx-head">오늘의 스위치</div>
+          <div class="rx-row"><b>상황</b><span>중요한 발표 전</span></div>
+          <div class="rx-row"><b>무드</b><span>정돈된 집중</span></div>
+          <div class="rx-row"><b>향</b><span>Calm Basil</span></div>
+          <div class="rx-quote">숨을 고르고,<br>나의 중심으로 돌아가는 시간</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><span></span></div>
+</section>
+
+<!-- ============ MOMENT (empathy) ============ -->
+<section class="moment reveal" id="moment">
+  <div class="wrap">
+    <span class="eyebrow">그 순간</span>
+    <p class="moment-lead">중요한 피칭 직전.<br><em>스스로를 다잡고 싶은</em> 그 3분.</p>
+    <p class="moment-body">커피는 이미 세 잔. 심호흡은 자리에서 하기 어색하고, 명상 앱은 지금 이 순간엔 켤 수 없다. 영업·컨설턴트에게 그 순간은 매주 몇 번씩 온다. 마음약방은 그 3분을 위한 나만의 준비 의식을 손안에 담았다.</p>
+  </div>
+</section>
+
+<!-- ============ PRODUCT + ROUTINE (one job) ============ -->
+<section class="prod-sec wrap reveal" id="product">
+  <div class="prod-grid">
+    <div class="prod-copy">
+      <span class="eyebrow">제품</span>
+      <h2>흡입 스틱 +<br>1분 호흡 카드</h2>
+      <p class="lead">피부에 바르지 않는 흡입 전용. 향을 코앞에 대고 맡은 뒤, 카드의 1분 호흡을 따라간다. 향과 행동을 하나로 묶은 준비 루틴.</p>
+    </div>
+    <div class="routine" id="routine">
+      <div class="step">
+        <div class="step-ill" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="18" y="19" width="12" height="23" rx="6"/>
+            <rect x="19" y="7" width="10" height="8.5" rx="4" class="lift"/>
+            <path d="M32 10l3.5-2.2M33.5 14l3.5-1.4" class="lift"/>
+          </svg>
+        </div>
+        <b>01 · 열고</b><small>스틱을 열고 코앞에 가져와요.</small>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="step">
+        <div class="step-ill" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M31 9c-6.5 2-10.5 7.5-10.5 14.5 0 5 3 8.5 3 12.5M20.5 23h-4.5"/>
+            <path class="wave" d="M8 17c2.2-1.2 4.4-1.2 6.5 0"/>
+            <path class="wave" d="M7 23c2.2-1.2 4.4-1.2 6.5 0"/>
+            <path class="wave" d="M8 29c2.2-1.2 4.4-1.2 6.5 0"/>
+          </svg>
+        </div>
+        <b>02 · 향을 맡고</b><small>천천히 숨을 들이쉬며 3번 호흡해요.</small>
+      </div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="step">
+        <div class="step-ill" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="24" cy="16" r="5"/>
+            <path d="M13 39c0-6.5 5-11 11-11s11 4.5 11 11"/>
+            <circle class="calm" cx="24" cy="24" r="20"/>
+          </svg>
+        </div>
+        <b>03 · 모드 전환</b><small>1분간 집중하며 회의를 시작하세요.</small>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THREE SCENTS (one job) ============ -->
+<section class="scents-sec wrap reveal">
+  <div class="sec-head">
+    <span class="eyebrow center">세 가지 향</span>
+    <h2>오늘 필요한 스위치를 고르세요</h2>
+  </div>
+  <div class="scents">
+    <div class="scent s-a">
+      <div class="scent-name">CALM BASIL</div>
+      <p>긴장되는 순간, 마음을 정돈하고 싶을 때</p>
+      <div class="tags"><span>정돈</span><span>여유</span><span>차분한 집중</span></div>
+    </div>
+    <div class="scent s-b">
+      <div class="scent-name">CLEAR MINT</div>
+      <p>생각을 또렷하게 정리하고 싶을 때</p>
+      <div class="tags"><span>집중</span><span>선명</span><span>사고 정리</span></div>
+    </div>
+    <div class="scent s-c">
+      <div class="scent-name">ENERGY CITRUS</div>
+      <p>분위기를 산뜻하게 바꾸고 싶을 때</p>
+      <div class="tags"><span>산뜻함</span><span>전환</span><span>리프레시</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS + QUOTE ============ -->
+<section class="stats wrap reveal" id="story">
+  <div class="quote">
+    <p>"향은 마음의 언어입니다.<br>당신의 하루를 정돈하는 작은 약방이 되겠습니다."</p>
+  </div>
+  <div class="stat"><span class="num" data-to="5" data-suffix="+">0</span><small>아로마 실무 경력 (년)</small></div>
+  <div class="stat"><span class="num" data-to="3" data-suffix="">0</span><small>v1 블렌드</small></div>
+  <div class="stat"><span class="num" data-to="1" data-suffix="분">0</span><small>호흡 카드</small></div>
+  <div class="stat made"><b>MADE IN KOREA</b><small>한국에서 정성 제조</small></div>
+</section>
+
+<!-- ============ DIAGNOSTIC (interactive) ============ -->
+<section class="diag-sec" id="diag">
+  <div class="wrap">
+    <div class="diag-head reveal">
+      <span class="eyebrow center">향 매칭 진단</span>
+      <h2>3가지 질문, 당신의 스위치</h2>
+      <p>지금 필요한 상태를 고르면, 맞는 향을 추천합니다.</p>
+    </div>
+
+    <!-- data-ai-endpoint: 비워두면 AI 카드 비활성. "/api/ritual-card"로 바꾸면 결과 아래에 1분 루틴 카드가 붙습니다 (packages/ritual-card). -->
+    <div class="diag reveal" data-ai-endpoint="">
+      <div class="q" data-q="1">
+        <div class="qt"><span class="qn">Q1</span> 주로 언제 쓰고 싶나요?</div>
+        <div class="opts">
+          <button class="opt" data-w="0" data-m="presentation">발표·피칭 직전</button>
+          <button class="opt" data-w="0" data-m="meeting">긴장되는 오후 미팅</button>
+          <button class="opt" data-w="0" data-m="call">아침 첫 콜·중요 통화</button>
+        </div>
+      </div>
+      <div class="q" data-q="2">
+        <div class="qt"><span class="qn">Q2</span> 그 순간, 원하는 나의 상태는? <em>주 결정</em></div>
+        <div class="opts">
+          <button class="opt" data-w="a">정돈된 집중</button>
+          <button class="opt" data-w="b">또렷한 모드</button>
+          <button class="opt" data-w="c">산뜻한 리프레시</button>
+        </div>
+      </div>
+      <div class="q" data-q="3">
+        <div class="qt"><span class="qn">Q3</span> 끌리는 향의 결은?</div>
+        <div class="opts">
+          <button class="opt" data-w="a">은은하고 부드러운</button>
+          <button class="opt" data-w="b">상큼하고 시원한</button>
+          <button class="opt" data-w="c">밝고 산뜻한</button>
+          <button class="opt" data-w="?">잘 모르겠어요</button>
+        </div>
+      </div>
+      <div class="diag-actions">
+        <button class="btn btn-primary" id="diagBtn">내 스위치 보기 →</button>
+        <span id="diagHint">세 질문에 모두 답해주세요</span>
+      </div>
+      <div class="result" id="diagResult" aria-live="polite">
+        <span class="eyebrow">당신의 스위치</span>
+        <div class="rcard" id="rcard">
+          <div class="rswatch"></div>
+          <div class="rmeta"><h3 id="rname"></h3><p id="rdesc"></p></div>
+        </div>
+        <div class="ractions">
+          <a href="#preorder" class="btn btn-primary" data-cta="result-preorder">이 스위치로 사전 주문 →</a>
+          <span id="rmismatch"></span>
+        </div>
+        <div class="rcard-ai" id="rcardAi" hidden></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRUST ============ -->
+<section class="trust-sec wrap reveal" id="trust">
+  <span class="eyebrow center">성분 &amp; 원료</span>
+  <h2>왜 마음약방</h2>
+  <div class="trust-cards">
+    <div class="tcard"><span class="tk">MAKER</span><h3>업계 5년 실무</h3><p>아로마 제품 기획·제조를 오래 다뤄온 사람이 직접 블렌딩합니다.</p></div>
+    <div class="tcard"><span class="tk">MATERIAL</span><h3>천연 향료</h3><p>EU IFRA 기준을 따른 천연 유래 향료. 흡입 전용으로 설계했습니다.</p></div>
+    <div class="tcard"><span class="tk">MADE IN</span><h3>국내 자체 제조</h3><p>보유 제조 설비에서 소량 정성 제작. 매 배치를 직접 관리합니다.</p></div>
+  </div>
+</section>
+
+<!-- ============ CTA BAND ============ -->
+<section class="cta-band reveal">
+  <div class="wrap">
+    <h2>다음 회의, 당신의 스위치와 함께.</h2>
+    <a href="#diag" class="btn btn-primary" data-cta="cta-band">내 향 찾기 →</a>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq wrap reveal">
+  <span class="eyebrow center">FAQ</span>
+  <h2>자주 묻는 질문</h2>
+  <details><summary>어떻게 사용하나요?</summary><p>스틱을 열어 코앞에 대고 천천히 향을 맡은 뒤, 동봉된 카드의 1분 호흡을 따라가면 됩니다. 피부에 바르지 않는 흡입 전용이라 자리에서도 티 나지 않게 쓸 수 있어요.</p></details>
+  <details><summary>세 가지 향, 뭐가 다른가요?</summary><p>Calm Basil은 정돈된 결, Clear Mint는 또렷한 결, Energy Citrus는 산뜻한 리프레시의 결입니다. 위 향 매칭 진단으로 지금 상황에 맞는 향을 추천받을 수 있어요.</p></details>
+  <details><summary>향이 너무 강하지 않나요?</summary><p>코앞에서 짧게 맡는 용도로 농도를 맞췄습니다. 주변에 퍼지지 않도록 설계했어요.</p></details>
+  <details><summary>배송은 언제 되나요?</summary><p>사전 주문은 수량 한정으로 받고, 제작 완료 후 순차 발송합니다. 주문 시 예상 일정을 안내드려요.</p></details>
+</section>
+
+<!-- ============ PREORDER / EMAIL CAPTURE ============ -->
+<section class="preorder reveal" id="preorder">
+  <div class="wrap preorder-inner">
+    <div class="preorder-copy">
+      <span class="eyebrow">사전 주문 · 출시 알림</span>
+      <h2>먼저 받아보실 분</h2>
+      <p>수량 한정 사전 주문. 이메일을 남겨주시면 진단 결과에 맞춘 향으로 준비해 알려드려요.</p>
+    </div>
+    <form class="preorder-form" id="preorderForm" novalidate
+          action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <div class="field">
+        <label for="pf-email">이메일</label>
+        <input type="email" id="pf-email" name="email" required placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label for="pf-blend">관심 향</label>
+        <select id="pf-blend" name="blend">
+          <option value="">진단 후 자동 선택</option>
+          <option value="a">Calm Basil · 정돈된 집중</option>
+          <option value="b">Clear Mint · 또렷한 모드</option>
+          <option value="c">Energy Citrus · 산뜻한 리프레시</option>
+        </select>
+      </div>
+      <input type="hidden" name="diag" id="pf-diag" value="" />
+      <input type="hidden" name="_subject" value="마음약방 사전주문 신청" />
+      <button type="submit" class="btn btn-primary block" id="pfSubmit">사전 주문 신청 →</button>
+      <p class="pf-msg" id="pfMsg" role="status" aria-live="polite"></p>
+      <p class="pf-privacy">제출 시 출시 알림 목적의 이메일 수집에 동의합니다. 언제든 수신 거부 가능.</p>
+    </form>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer" id="buy">
+  <div class="wrap foot-inner">
+    <div class="brand foot-brand"><span class="brand-ko">마음약방</span><span class="brand-en">MAUM YAKBANG</span></div>
+    <nav class="foot-links">
+      <a href="#product">제품소개</a><a href="#diag">향 매칭 진단</a><a href="#routine">루틴 가이드</a><a href="#trust">성분 &amp; 원료</a><a href="#story">스토리</a>
+    </nav>
+  </div>
+  <p class="disclaimer wrap">마음약방은 향을 활용한 기분 전환·준비 루틴 제품입니다. 의약품·의료기기가 아닙니다. © 2026 마음약방 · korrio093@gmail.com</p>
+</footer>
+
+<!-- floating buy card -->
+<aside class="buycard" id="buycard">
+  <div class="buycard-thumb"></div>
+  <div class="buycard-info">
+    <b>마음약방 아로마 인헤일러 키트</b>
+    <small>인헤일러(15g) + 1분 호흡 카드 + 전용 파우치</small>
+    <div class="buycard-price">19,000<span>원</span></div>
+  </div>
+  <a href="#preorder" class="btn btn-primary" data-cta="buycard">지금 구매하기</a>
+  <button class="buycard-x" id="buycardX" aria-label="닫기">×</button>
+</aside>
+
+<script src="script.js"></script>
+</body>
+</html>
