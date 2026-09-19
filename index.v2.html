@@ -125,7 +125,8 @@ section.blk{padding:var(--s8) 0}
 /* (01) lineup: photo-card 3열 (국내 몰 관행: 사진 + 라벨 + 헤드 + 한 줄 + 액션) */
 .lineup{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
 .lineup article{display:flex;flex-direction:column;gap:6px}
-.lineup .ph{aspect-ratio:4/5;border-radius:var(--r-lg);background:var(--tint-a);display:grid;place-items:center;margin-bottom:var(--s2);border:1px solid var(--line);transition:transform .5s var(--ease)}
+.lineup .ph{aspect-ratio:4/5;border-radius:var(--r-lg);background:var(--tint-a);display:grid;place-items:center;margin-bottom:var(--s2);border:1px solid var(--line);transition:transform .5s var(--ease);overflow:hidden}
+.lineup .ph img{width:100%;height:100%;object-fit:cover;display:block}
 .lineup [data-blend=b] .ph{background:var(--tint-b)} .lineup [data-blend=c] .ph{background:var(--tint-c)}
 .lineup article:hover .ph{transform:translateY(-4px)}
 .lineup .stick{width:54px;height:170px;border-radius:27px;background:var(--surface);border:1px solid var(--line-strong);position:relative}
@@ -279,7 +280,7 @@ footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
     </div>
     <div class="lineup reveal">
       <article data-blend="a">
-        <div class="ph" aria-hidden="true"><span class="stick"></span></div>
+        <div class="ph"><img src="assets/box-daily.webp" width="1200" height="1500" alt="ARTH Therapy Roll On 패키지" loading="lazy" decoding="async"></div>
         <span class="lbl">CALM BASIL · 베르가못 · 바질</span>
         <h3 class="caps">Calm Basil</h3>
         <span class="kr">정돈된 집중</span>
