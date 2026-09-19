@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  ritual-card:
+    name: ritual-card tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: node --check script.js
+      - run: npm test --workspace=packages/ritual-card
+
+  web-next:
+    name: web-next lint + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web-next
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: web-next/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build

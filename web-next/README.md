@@ -1,36 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# web-next
 
-## Getting Started
-
-First, run the development server:
+Next.js renewal of the Maum Yakbang landing page — same design system as the static root, rebuilt with React state and `motion` animations.
+정적 랜딩(루트)과 같은 디자인 시스템을 React 상태와 `motion` 애니메이션으로 다시 구현한 Next.js 버전입니다.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev     # http://localhost:3000
+npm run lint
+npm run build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Quiz logic lives in `components/Diagnostic.tsx` and `components/LandingProvider.tsx` (BLENDS). Keep it in sync with the root `script.js` and `packages/ritual-card/src/blends.js`.
+- Analytics helper: `lib/analytics.ts`.
+- See the root [README](../README.md) for the project overview and [CONTRIBUTING](../CONTRIBUTING.md) for standards.

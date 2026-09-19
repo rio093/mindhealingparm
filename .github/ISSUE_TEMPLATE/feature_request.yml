@@ -1,0 +1,22 @@
+name: Feature request · 기능 제안
+description: Propose a change to the template or the module
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem / 사용자 문제
+      description: Describe the problem before the solution. 해결책보다 문제를 먼저 적어 주세요.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal / 제안
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: This does not add medical, therapeutic, or performance claims
+        - label: This keeps the static landing free of build tooling and external dependencies (or explains why not)

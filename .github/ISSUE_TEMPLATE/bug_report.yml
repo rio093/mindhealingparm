@@ -1,0 +1,35 @@
+name: Bug report · 버그 신고
+description: Something is broken on the landing page, in web-next, or in @maum/ritual-card
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area / 영역
+      options:
+        - Static landing (index.html / styles.css / script.js)
+        - web-next (Next.js)
+        - packages/ritual-card
+        - api/ritual-card.js
+        - Docs
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened / 무슨 일이 있었나요
+      description: Expected vs actual. 기대한 동작과 실제 동작.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce / 재현 절차
+      placeholder: "1. Open …\n2. Click …\n3. See …"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment / 환경
+      placeholder: "Chrome 130 on macOS · Node 22.x"
