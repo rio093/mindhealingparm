@@ -38,7 +38,8 @@ Next.js 버전은 `cd web-next && npm install && npm run dev` 로 실행합니�
 ### 저장소 구조
 
 ```
-index.html / styles.css / script.js   정적 랜딩 페이지 (배포 대상)
+index.html                            v2 랜딩 (단일 파일, 배포 대상) · docs/design/ 참고
+index.v1.html / styles.css / script.js  v1 랜딩 (비교·A/B용)
 api/ritual-card.js                    Vercel 서버리스 함수 — 모듈을 HTTP로 노출
 packages/ritual-card/                 @maum/ritual-card 모듈 (테스트·CLI 포함)
 web-next/                             Next.js 리뉴얼 (선택)
@@ -51,8 +52,8 @@ ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 
 | 바꿀 것 | 위치 |
 |---|---|
-| 브랜드명, 카피, FAQ | `index.html` |
-| 색·타이포·간격 토큰 | `styles.css` 상단 `:root` |
+| 브랜드명, 카피 | `index.html` (v2, 단일 파일) |
+| 색·타이포·간격 토큰 | `index.html` 상단 `:root` (v1은 `styles.css`) |
 | 블렌드(제품 종류)와 진단 문항 | `index.html`의 `.diag` 블록, `packages/ritual-card/src/blends.js` |
 | 사전 주문 폼 엔드포인트 | `index.html`의 `<form action="https://formspree.io/f/YOUR_FORM_ID">` — 이 값 하나만 바꾸면 JS가 따라갑니다 |
 | 분석 도구 | `index.html`의 Plausible `data-domain` (다른 도구를 쓰면 `script.js`의 `track()` 한 곳만 수정) |
@@ -74,7 +75,7 @@ ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 
 ### 라이브 데모와 API 경계
 
-`index.v2.html`은 국내·해외 레퍼런스를 분석해 다시 설계한 v2 랜딩입니다(첫 화면 상단에 OSS 성격을 명시). 퀴즈 3문항 → 규칙 기반 카드가 즉시 나오고, **"Generate with OpenAI"** 버튼만 서버의 `/api/ritual-card`에 `ai: true`로 요청합니다. 그 경로에만 per-IP rate limit(`RITUAL_AI_LIMIT`/`RITUAL_AI_WINDOW_MS`)과 origin 허용 목록(`RITUAL_ALLOWED_ORIGINS`)이 걸리고, 키는 서버에만 있습니다. 위협 모델은 [SECURITY.md](SECURITY.md)에 있습니다.
+`index.html`은 국내·해외 레퍼런스를 분석해 다시 설계한 v2 랜딩입니다(첫 화면 상단에 OSS 성격을 명시, 설계 근거는 [docs/design/](docs/design/README.md)). 퀴즈 3문항 → 규칙 기반 카드가 즉시 나오고, **"Generate with OpenAI"** 버튼만 서버의 `/api/ritual-card`에 `ai: true`로 요청합니다. 그 경로에만 per-IP rate limit(`RITUAL_AI_LIMIT`/`RITUAL_AI_WINDOW_MS`)과 origin 허용 목록(`RITUAL_ALLOWED_ORIGINS`)이 걸리고, 키는 서버에만 있습니다. 위협 모델은 [SECURITY.md](SECURITY.md)에 있습니다.
 
 ### 기여하기
 
@@ -108,7 +109,8 @@ For the Next.js version: `cd web-next && npm install && npm run dev`.
 ### Repository layout
 
 ```
-index.html / styles.css / script.js   static landing page (what gets deployed)
+index.html                            v2 landing (single file, what gets deployed) · see docs/design/
+index.v1.html / styles.css / script.js  v1 landing (kept for comparison / A/B)
 api/ritual-card.js                    Vercel serverless function exposing the module over HTTP
 packages/ritual-card/                 @maum/ritual-card module (tests and CLI included)
 web-next/                             Next.js renewal (optional)
@@ -121,8 +123,8 @@ ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 
 | What to change | Where |
 |---|---|
-| Brand name, copy, FAQ | `index.html` |
-| Colour, type, and spacing tokens | `:root` at the top of `styles.css` |
+| Brand name, copy | `index.html` (v2, single file) |
+| Colour, type, and spacing tokens | `:root` at the top of `index.html` (v1: `styles.css`) |
 | Blends (product variants) and quiz questions | the `.diag` block in `index.html`, `packages/ritual-card/src/blends.js` |
 | Pre-order form endpoint | `<form action="https://formspree.io/f/YOUR_FORM_ID">` in `index.html` — the JS reads it from there, so this is the only place to edit |
 | Analytics | the Plausible `data-domain` in `index.html` (for another tool, change `track()` in `script.js`) |
@@ -144,7 +146,7 @@ The template describes the product only as a "switch" and a "preparation ritual"
 
 ### Live demo and the API boundary
 
-`index.v2.html` is the redesigned v2 landing (its top bar states the OSS nature of the site). The three-question quiz returns a rule-based card instantly; only the **"Generate with OpenAI"** button posts `ai: true` to `/api/ritual-card`. That path alone is rate-limited per IP (`RITUAL_AI_LIMIT` / `RITUAL_AI_WINDOW_MS`) and origin-restricted (`RITUAL_ALLOWED_ORIGINS`); the key never leaves the server. The threat model is in [SECURITY.md](SECURITY.md).
+`index.html` is the redesigned v2 landing (its top bar states the OSS nature of the site; design rationale in [docs/design/](docs/design/README.md)). The three-question quiz returns a rule-based card instantly; only the **"Generate with OpenAI"** button posts `ai: true` to `/api/ritual-card`. That path alone is rate-limited per IP (`RITUAL_AI_LIMIT` / `RITUAL_AI_WINDOW_MS`) and origin-restricted (`RITUAL_ALLOWED_ORIGINS`); the key never leaves the server. The threat model is in [SECURITY.md](SECURITY.md).
 
 ### Contributing
 
