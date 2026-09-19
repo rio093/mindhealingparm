@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마음약방 — 1분 향 스위치 · Open-source landing template + OpenAI ritual-card module</title>
+<meta name="description" content="회의 전 1분 준비 루틴 브랜드의 랜딩 페이지 템플릿과 OpenAI 기반 ritual-card 모듈. Reference implementation, MIT.">
+<meta property="og:title" content="마음약방 · Maum Yakbang — open-source ritual landing + AI module">
+<meta property="og:description" content="Pre-meeting scent ritual landing template and @maum/ritual-card (OpenAI Responses API, claim guard, fallback). MIT.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<script defer data-domain="mindhealingparm.vercel.app" src="https://plausible.io/js/script.tagged-events.js"></script>
+<script>window.plausible=window.plausible||function(){(window.plausible.q=window.plausible.q||[]).push(arguments)}</script>
+<style>
+/* ===================================================================
+   마음약방 v2 — index.v2.html (single file, no build step)
+   룩: two-voice typography(EN caps + KR line), ink arch, split lineup,
+       sticky ritual stack. 구조·메뉴·CTA 관행: 국내 레퍼런스.
+   모션 예산: reveal(opacity+16px) / arch expand / sticky. 떠다니는 장식 없음.
+   =================================================================== */
+:root{
+  --brand:#5b6544; --brand-ink:#454d33; --brand-tint:#eceee4;
+  --canvas:#f5f2ea; --canvas-2:#efebe0; --surface:#faf8f2;
+  --ink:#26251e; --body:#55524a; --muted:#6b675d;
+  --line:#ddd7c8; --line-strong:#c7c0ac;
+  --on-ink:#f5f2ea; --on-ink-dim:rgba(245,242,234,.72);
+  --tint-a:#e6ebdc; --tint-b:#dfe9e6; --tint-c:#f1e8d6;   /* Calm Basil / Clear Mint / Energy Citrus */
+  --s1:8px; --s2:16px; --s3:24px; --s4:32px; --s5:48px; --s6:64px; --s7:96px; --s8:144px;
+  --r:6px; --r-lg:12px; --pill:100px;
+  --display:"Cormorant Garamond",Georgia,serif;
+  --sans:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo",sans-serif;
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --max:1120px; --nav-h:64px; --oss-h:36px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + var(--oss-h))}
+body{background:var(--canvas);color:var(--body);font-family:var(--sans);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--s3)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---- two voices ---- */
+.caps{font-family:var(--display);font-weight:600;text-transform:uppercase;letter-spacing:.02em;line-height:1.02;color:var(--ink)}
+.kr{font-family:var(--sans);font-weight:500;color:var(--body)}
+.num{font-family:var(--display);font-size:14px;letter-spacing:.08em;color:var(--muted)}
+h1.caps{font-size:clamp(40px,6.4vw,84px)}
+h2.caps{font-size:clamp(30px,4.2vw,56px)}
+h3.caps{font-size:clamp(22px,2.6vw,32px)}
+.kr-lead{font-size:clamp(17px,1.5vw,20px);line-height:1.7}
+.arrow-link{display:inline-flex;align-items:center;gap:10px;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink);font-weight:600}
+.arrow-link::after{content:"→";transition:transform .3s var(--ease)}
+.arrow-link:hover::after{transform:translateX(4px)}
+
+/* ---- OSS bar (5초 안에 성격 파악) ---- */
+.oss{position:fixed;top:0;left:0;right:0;height:var(--oss-h);z-index:60;background:var(--ink);color:var(--on-ink);font-size:13px;display:flex;align-items:center}
+.oss .wrap{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);width:100%}
+.oss b{font-weight:600;letter-spacing:.01em}
+.oss nav{display:flex;gap:var(--s3)}
+.oss nav a{color:var(--on-ink-dim);border-bottom:1px solid transparent}
+.oss nav a:hover{color:var(--on-ink);border-color:var(--on-ink-dim)}
+.oss .tag{display:inline-block;padding:2px 8px;border:1px solid rgba(245,242,234,.35);border-radius:var(--pill);margin-right:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---- nav ---- */
+.nav{position:fixed;top:var(--oss-h);left:0;right:0;height:var(--nav-h);z-index:50;display:flex;align-items:center;transition:background .3s,box-shadow .3s}
+.nav.scrolled{background:rgba(245,242,234,.9);backdrop-filter:blur(8px);box-shadow:0 1px 0 var(--line)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;width:100%}
+.brand{display:flex;flex-direction:column;line-height:1;color:var(--ink)}
+.brand-ko{font-weight:700;font-size:18px;letter-spacing:-.01em}
+.brand-en{font-family:var(--display);font-size:11px;letter-spacing:.2em;color:var(--muted);margin-top:3px}
+.nav-links{display:flex;gap:var(--s4);font-size:14px;font-weight:500}
+.nav-links a{color:var(--body)} .nav-links a:hover{color:var(--ink)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:var(--pill);border:1.5px solid var(--ink);color:var(--ink);font-size:14px;font-weight:600;transition:background .25s,color .25s}
+.pill:hover{background:var(--ink);color:var(--on-ink)}
+.pill.solid{background:var(--ink);color:var(--on-ink)} .pill.solid:hover{background:var(--brand-ink);border-color:var(--brand-ink)}
+.nav-right{display:flex;align-items:center;gap:var(--s2)}
+.ico{display:inline-flex;color:var(--ink);opacity:.8}.ico:hover{opacity:1}
+.hamb{display:none;font-size:22px;color:var(--ink);padding:6px 10px}
+.mnav{display:none}
+@media (max-width:860px){
+  .nav-links,.nav .nav-right{display:none} .hamb{display:block}
+  .mnav{display:none;position:fixed;top:calc(var(--oss-h) + var(--nav-h));left:0;right:0;z-index:49;background:var(--canvas);border-bottom:1px solid var(--line);padding:var(--s3);flex-direction:column;gap:var(--s2);font-size:16px}
+  .mnav.open{display:flex}
+  .oss nav{gap:var(--s2)} .oss .tag{display:none} .oss b{font-size:12px}
+}
+
+/* ---- hero: ink arch on sand ---- */
+.hero{padding-top:calc(var(--oss-h) + var(--nav-h));min-height:100vh;display:grid;place-items:center;position:relative}
+.arch{--w:min(720px,86vw);width:var(--w);height:min(78vh,860px);background:var(--ink);color:var(--on-ink);border-radius:calc(var(--w)/2) calc(var(--w)/2) 0 0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:var(--s7) var(--s4) var(--s6);transform-origin:50% 100%;will-change:transform,border-radius}
+.arch .num{color:var(--on-ink-dim)}
+.arch h1{color:var(--on-ink);margin:var(--s2) 0 var(--s2)}
+.arch .kr-lead{color:var(--on-ink-dim);max-width:34ch}
+.arch .cta{margin-top:var(--s4);display:flex;gap:var(--s2);flex-wrap:wrap;justify-content:center}
+.arch .pill{border-color:var(--on-ink);color:var(--on-ink)} .arch .pill:hover{background:var(--on-ink);color:var(--ink)}
+.arch .pill.solid{background:var(--on-ink);color:var(--ink)} .arch .pill.solid:hover{background:#fff}
+.cue{position:absolute;bottom:var(--s3);left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:600px){.arch{height:auto;min-height:70vh;padding:var(--s6) var(--s3) var(--s5)}}
+
+/* ---- sections ---- */
+section.blk{padding:var(--s8) 0}
+.head{display:grid;grid-template-columns:1fr;gap:var(--s2);max-width:56ch;margin-bottom:var(--s6)}
+.head .kr-lead{max-width:48ch}
+
+/* (01) definition card */
+.def{display:grid;grid-template-columns:1.1fr .9fr;gap:var(--s6);align-items:center}
+.def-visual{aspect-ratio:4/5;background:var(--canvas-2);border-radius:var(--r-lg);position:relative;overflow:hidden;border:1px solid var(--line)}
+.def-visual .stick{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:76px;height:220px;border-radius:38px;background:var(--surface);border:1px solid var(--line-strong);display:flex;align-items:flex-end;justify-content:center;padding-bottom:22px}
+.def-visual .stick::before{content:"";position:absolute;top:10px;left:50%;transform:translateX(-50%);width:50px;height:38px;border-radius:25px 25px 8px 8px;background:var(--ink)}
+.def-visual .stick span{font-size:11px;letter-spacing:.14em;color:var(--muted);writing-mode:vertical-rl}
+.def-visual .card{position:absolute;right:12%;bottom:12%;width:150px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 0 var(--line)}
+.def-visual .card b{display:block;font-size:11px;letter-spacing:.1em;color:var(--muted);margin-bottom:6px}
+.def-visual .card i{display:block;height:6px;background:var(--line);border-radius:3px;margin:6px 0}
+.def-visual .card i:last-child{width:60%}
+.def-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s5)}
+.def-card .num{display:block;margin-bottom:var(--s5)}
+.def-card p{margin-top:var(--s3)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s2);margin-top:var(--s4)}
+.steps div{border-top:1px solid var(--line-strong);padding-top:var(--s2)}
+.steps b{display:block;font-family:var(--display);font-size:22px;color:var(--ink);line-height:1}
+.steps small{display:block;margin-top:6px;color:var(--muted);font-size:13px}
+@media (max-width:860px){.def{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr 1fr}}
+
+/* (01) lineup: photo-card 3열 (국내 몰 관행: 사진 + 라벨 + 헤드 + 한 줄 + 액션) */
+.lineup{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
+.lineup article{display:flex;flex-direction:column;gap:6px}
+.lineup .ph{aspect-ratio:4/5;border-radius:var(--r-lg);background:var(--tint-a);display:grid;place-items:center;margin-bottom:var(--s2);border:1px solid var(--line);transition:transform .5s var(--ease)}
+.lineup [data-blend=b] .ph{background:var(--tint-b)} .lineup [data-blend=c] .ph{background:var(--tint-c)}
+.lineup article:hover .ph{transform:translateY(-4px)}
+.lineup .stick{width:54px;height:170px;border-radius:27px;background:var(--surface);border:1px solid var(--line-strong);position:relative}
+.lineup .stick::before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:36px;height:28px;border-radius:18px 18px 6px 6px;background:var(--ink)}
+.lineup .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.lineup h3.caps{font-size:clamp(24px,2.4vw,30px)}
+.lineup .kr{font-size:16px;color:var(--ink)}
+.lineup p{font-size:14px;color:var(--muted)}
+.lineup .act{display:flex;justify-content:space-between;align-items:center;gap:var(--s2);border-top:1px solid var(--line);padding-top:var(--s2);margin-top:var(--s1);flex-wrap:wrap}
+.lineup .price{font-size:13px;color:var(--body)}
+@media (max-width:860px){.lineup{grid-template-columns:1fr}.lineup .ph{aspect-ratio:16/9}}
+
+/* (03) ritual sticky stack */
+.ritual{background:var(--ink);color:var(--on-ink)}
+.ritual .caps,.ritual .kr,.ritual .num{color:inherit}
+.ritual .num{color:var(--on-ink-dim)}
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:start}
+.stack-left{position:sticky;top:calc(var(--oss-h) + var(--nav-h) + var(--s5))}
+.rcard{background:var(--surface);color:var(--ink);border-radius:var(--r-lg);padding:var(--s4);max-width:420px;min-height:300px;display:flex;flex-direction:column;gap:var(--s2);transition:opacity .4s var(--ease)}
+.rcard .num{color:var(--muted)}
+.rcard h3{font-family:var(--display);font-size:30px;font-weight:600;line-height:1.05}
+.rcard ol{margin-left:1.2em;color:var(--body);font-size:15px}
+.rcard ol li{margin:6px 0}
+.rcard .foot{margin-top:auto;font-size:13px;color:var(--muted)}
+.stack-right{display:flex;flex-direction:column}
+.stack-right article{min-height:44vh;display:flex;flex-direction:column;justify-content:center;gap:var(--s2);border-top:1px solid rgba(245,242,234,.18);padding:var(--s5) 0}
+.stack-right article:first-child{border-top:0}
+.stack-right .caps{font-size:clamp(28px,3.4vw,44px)}
+.stack-right .kr{color:var(--on-ink-dim);max-width:40ch}
+@media (max-width:860px){.stack{grid-template-columns:1fr}.stack-left{position:static}.stack-right article{min-height:0}}
+
+/* (04) live demo */
+.demo{background:var(--canvas-2)}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--s6);align-items:start}
+.q{margin-bottom:var(--s4)}
+.q .qt{font-weight:600;color:var(--ink);margin-bottom:var(--s2);display:flex;gap:10px;align-items:baseline}
+.q .qt em{font-style:normal;font-size:12px;color:var(--muted);font-weight:500}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{padding:10px 16px;border:1px solid var(--line-strong);border-radius:var(--pill);background:var(--surface);color:var(--body);font-size:14px;transition:all .2s}
+.opt:hover{border-color:var(--ink);color:var(--ink)}
+.opt.sel{background:var(--ink);border-color:var(--ink);color:var(--on-ink)}
+.demo-actions{display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap;margin-top:var(--s2)}
+.demo-actions .hint{font-size:13px;color:var(--muted)}
+.result{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--s4);min-height:420px;display:flex;flex-direction:column;gap:var(--s2)}
+.result[hidden]{display:none}
+.result .meta{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.result .src{padding:3px 10px;border-radius:var(--pill);border:1px solid var(--line-strong)}
+.result .src.ai{background:var(--brand);color:#fff;border-color:var(--brand)}
+.result h3{font-family:var(--display);font-size:32px;font-weight:600;color:var(--ink);line-height:1.05}
+.result .blend{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--brand)}
+.result ol{margin-left:1.2em;font-size:15px}
+.result ol li{margin:8px 0}
+.result .why{font-size:14px;color:var(--muted);border-top:1px solid var(--line);padding-top:var(--s2);margin-top:auto}
+.result .ai-note{font-size:13px;color:var(--muted)}
+.result pre{font-size:12px;background:var(--canvas);border-radius:var(--r);padding:12px;overflow:auto;max-height:180px;color:var(--body)}
+.result details summary{cursor:pointer;font-size:13px;color:var(--muted)}
+.placeholder{display:grid;place-items:center;text-align:center;color:var(--muted);font-size:14px;min-height:420px;border:1px dashed var(--line-strong);border-radius:var(--r-lg)}
+.placeholder[hidden]{display:none}
+@media (max-width:860px){.demo-grid{grid-template-columns:1fr}}
+
+/* (05) conversion split */
+.conv{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong)}
+.conv > div{padding:var(--s7) var(--s5);display:flex;flex-direction:column;gap:var(--s2)}
+.conv > div + div{border-left:1px solid var(--line-strong)}
+.conv h3.caps{margin-top:var(--s1)}
+.form{display:flex;flex-direction:column;gap:var(--s2);margin-top:var(--s2)}
+.form label{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.form input,.form select{width:100%;padding:12px 0;border:0;border-bottom:1px solid var(--line-strong);background:transparent;font:inherit;color:var(--ink);border-radius:0}
+.form input:focus,.form select:focus{outline:none;border-color:var(--ink)}
+.form .consent{font-size:12px;color:var(--muted);line-height:1.5}
+.form .row{display:flex;gap:var(--s2);align-items:center;flex-wrap:wrap}
+.msg{font-size:13px;min-height:1.4em} .msg.ok{color:var(--brand)} .msg.err{color:#a3452f}
+@media (max-width:860px){.conv{grid-template-columns:1fr}.conv > div + div{border-left:0;border-top:1px solid var(--line-strong)}.conv > div{padding:var(--s6) var(--s3)}}
+
+/* footer */
+footer{background:var(--ink);color:var(--on-ink-dim);padding:var(--s7) 0 var(--s5);font-size:13px}
+.fgrid{display:grid;grid-template-columns:1.2fr 1fr .8fr 1.4fr;gap:var(--s5)}
+footer h4{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--on-ink);margin-bottom:var(--s2)}
+footer a:hover{color:var(--on-ink)}
+footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.legal{margin-top:var(--s6);padding-top:var(--s3);border-top:1px solid rgba(245,242,234,.18);display:flex;justify-content:space-between;gap:var(--s3);flex-wrap:wrap;font-size:12px}
+@media (max-width:860px){.fgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.fgrid{grid-template-columns:1fr}}
+
+/* ---- motion: budgeted ---- */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .arch{transform:none!important;border-radius:0 0 0 0!important}
+  .arrow-link::after,.pill,.opt,.lineup a{transition:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ OSS BAR ============ -->
+<div class="oss" role="region" aria-label="프로젝트 성격">
+  <div class="wrap">
+    <div><span class="tag">MIT</span><b>Open-source template + OpenAI ritual-card module</b> <span style="opacity:.6">— reference implementation, not a store</span></div>
+    <nav aria-label="개발자 링크">
+      <a href="https://github.com/rio093/mindhealingparm" rel="noopener">GitHub</a>
+      <a href="https://github.com/rio093/mindhealingparm/tree/main/packages/ritual-card#readme" rel="noopener">Documentation</a>
+      <a href="#demo">Try AI module</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-ko">마음약방</span><span class="brand-en">MAUM YAKBANG</span></a>
+    <nav class="nav-links" aria-label="주 메뉴">
+      <a href="#lineup">제품</a>
+      <a href="#demo">진단</a>
+      <a href="#ritual">루틴</a>
+    </nav>
+    <div class="nav-right">
+      <a href="https://github.com/rio093/mindhealingparm" rel="noopener" class="ico" aria-label="GitHub repository" title="GitHub"><svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+      <a href="#preorder" class="pill" data-cta="nav">사전 주문</a>
+    </div>
+    <button class="hamb" id="hamb" aria-label="메뉴 열기" aria-expanded="false" aria-controls="mnav">≡</button>
+  </div>
+</header>
+<nav class="mnav" id="mnav" aria-label="모바일 메뉴">
+  <a href="#lineup">제품</a><a href="#demo">진단</a><a href="#ritual">루틴</a><a href="#preorder">사전 주문</a>
+</nav>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="arch" id="arch">
+    <span class="num">ONE MINUTE BEFORE THE MEETING</span>
+    <h1 class="caps">Switch into<br>meeting mode</h1>
+    <p class="kr-lead">회의 전, 나를 바꾸는 1분 향 스위치.<br>3초의 향, 1분의 호흡, 그리고 오늘 전할 한 문장.</p>
+    <div class="cta">
+      <a href="#demo" class="pill solid" data-cta="hero-quiz">3문항 진단 시작</a>
+      <a href="#lineup" class="pill" data-cta="hero-product">제품 보기</a>
+    </div>
+  </div>
+  <div class="cue" aria-hidden="true">Scroll</div>
+</section>
+
+<!-- ============ (01) LINEUP ============ -->
+<section class="blk" id="lineup">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="num">(01) THREE BLENDS · STARTER KIT</span>
+      <h2 class="caps">Pick the state,<br>not the scent</h2>
+      <p class="kr-lead">원하는 상태를 고르면 블렌드가 정해집니다. 향의 취향은 참고 신호로만 기록합니다.</p>
+    </div>
+    <div class="lineup reveal">
+      <article data-blend="a">
+        <div class="ph" aria-hidden="true"><span class="stick"></span></div>
+        <span class="lbl">CALM BASIL · 베르가못 · 바질</span>
+        <h3 class="caps">Calm Basil</h3>
+        <span class="kr">정돈된 집중</span>
+        <p>중요한 순간 전 한 박자 정돈하는 스위치.</p>
+        <div class="act"><span class="price">스타터 키트 · 사전 관심 등록</span><a href="#preorder" class="arrow-link" data-cta="lineup-a">Notify me</a></div>
+      </article>
+      <article data-blend="b">
+        <div class="ph" aria-hidden="true"><span class="stick"></span></div>
+        <span class="lbl">CLEAR MINT · 자몽 · 페퍼민트</span>
+        <h3 class="caps">Clear Mint</h3>
+        <span class="kr">또렷한 모드</span>
+        <p>생각을 또렷하게 정리하는 스위치.</p>
+        <div class="act"><span class="price">스타터 키트 · 사전 관심 등록</span><a href="#preorder" class="arrow-link" data-cta="lineup-b">Notify me</a></div>
+      </article>
+      <article data-blend="c">
+        <div class="ph" aria-hidden="true"><span class="stick"></span></div>
+        <span class="lbl">ENERGY CITRUS · 시트러스</span>
+        <h3 class="caps">Energy Citrus</h3>
+        <span class="kr">산뜻한 리프레시</span>
+        <p>분위기를 가볍게 바꾸는 스위치.</p>
+        <div class="act"><span class="price">스타터 키트 · 사전 관심 등록</span><a href="#preorder" class="arrow-link" data-cta="lineup-c">Notify me</a></div>
+      </article>
+    </div>
+    <p class="kr" style="margin-top:var(--s3);font-size:14px;color:var(--muted)">어떤 블렌드가 맞는지 모르겠다면 <a href="#demo" class="arrow-link" style="font-size:13px">3문항 진단</a></p>
+  </div>
+</section>
+
+<!-- ============ (02) PRODUCT DEFINITION ============ -->
+<section class="blk" id="product" style="padding-top:0">
+  <div class="wrap def">
+    <div class="def-visual reveal" aria-hidden="true">
+      <div class="stick"><span>MAUM YAKBANG</span></div>
+      <div class="card"><b>1분 호흡 카드</b><i></i><i></i><i></i></div>
+    </div>
+    <div class="def-card reveal">
+      <span class="num">(02) SCENT · BREATH · SENTENCE</span>
+      <h2 class="caps">Inhale, breathe,<br>say one line</h2>
+      <p class="kr-lead">흡입 전용 향 스틱과 1분 호흡 카드. 피부에 바르지 않고, 코앞에서 3초 맡은 뒤 카드의 호흡을 따라갑니다. 향과 행동을 하나로 묶은 준비 루틴입니다.</p>
+      <div class="steps">
+        <div><b>3s</b><small>향을 코앞에서</small></div>
+        <div><b>60s</b><small>카드의 호흡을 따라</small></div>
+        <div><b>1</b><small>오늘 전할 한 문장</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ (03) RITUAL — sticky stack ============ -->
+<section class="blk ritual" id="ritual">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="num">(03) THE ONE-MINUTE RITUAL</span>
+      <h2 class="caps">Four words,<br>one minute</h2>
+    </div>
+    <div class="stack">
+      <div class="stack-left">
+        <div class="rcard" id="rcardStack">
+          <span class="num">1분 호흡 카드 · CALM BASIL</span>
+          <h3 id="rcTitle">정돈의 1분</h3>
+          <ol id="rcSteps">
+            <li>스틱을 코앞에 두고 3초, 베르가못과 바질의 결을 천천히 들이마십니다.</li>
+            <li>4초 들이쉬고 6초 내쉬기를 세 번 반복하며 어깨의 힘을 내려놓습니다.</li>
+            <li>오늘 꼭 전할 한 문장을 마음속으로 정리합니다.</li>
+          </ol>
+          <span class="foot" id="rcFoot">준비됐습니다. 정돈된 채로 들어가세요.</span>
+        </div>
+      </div>
+      <div class="stack-right">
+        <article data-word="정돈" class="reveal"><span class="num">01</span><h3 class="caps">Settle</h3><p class="kr">정돈. 흩어진 생각을 한 줄로 모으는 3초. 향은 그 신호입니다.</p></article>
+        <article data-word="또렷" class="reveal"><span class="num">02</span><h3 class="caps">Clear</h3><p class="kr">또렷. 4초 들이쉬고 6초 내쉬는 호흡 세 번. 카드가 박자를 잡아 줍니다.</p></article>
+        <article data-word="전환" class="reveal"><span class="num">03</span><h3 class="caps">Switch</h3><p class="kr">전환. 오늘 전할 한 문장을 정하면 회의 모드로 넘어갑니다.</p></article>
+        <article data-word="준비" class="reveal"><span class="num">04</span><h3 class="caps">Ready</h3><p class="kr">준비. 진단 결과에 따라 이 카드는 당신의 블렌드와 상황에 맞게 바뀝니다. 아래에서 직접 만들어 보세요.</p><a href="#demo" class="arrow-link" style="color:var(--on-ink)">Make my card</a></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ (04) LIVE DEMO ============ -->
+<section class="blk demo" id="demo">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="num">(04) LIVE DEMO · @maum/ritual-card</span>
+      <h2 class="caps">Try the module</h2>
+      <p class="kr-lead">세 문항에 답하면 규칙 기반 카드가 바로 나옵니다. 그 다음 "Generate with OpenAI"를 누르면 같은 답으로 서버의 <code>/api/ritual-card</code>가 OpenAI Responses API를 호출하고, 클레임 가드를 통과한 카드만 돌려줍니다. 키는 서버에만 있고, AI 경로에는 rate limit이 걸려 있습니다.</p>
+    </div>
+    <div class="demo-grid">
+      <div class="reveal" id="diag">
+        <div class="q" data-q="1">
+          <div class="qt">주로 언제 쓰고 싶나요? <em>Q1 · 상황</em></div>
+          <div class="opts">
+            <button class="opt" data-w="presentation">발표·피칭 직전</button>
+            <button class="opt" data-w="meeting">긴장되는 오후 미팅</button>
+            <button class="opt" data-w="call">아침 첫 콜·중요 통화</button>
+          </div>
+        </div>
+        <div class="q" data-q="2">
+          <div class="qt">그 순간, 원하는 나의 상태는? <em>Q2 · 블렌드 결정</em></div>
+          <div class="opts">
+            <button class="opt" data-w="a">정돈된 집중</button>
+            <button class="opt" data-w="b">또렷한 모드</button>
+            <button class="opt" data-w="c">산뜻한 리프레시</button>
+          </div>
+        </div>
+        <div class="q" data-q="3">
+          <div class="qt">끌리는 향의 결은? <em>Q3 · 선호 신호</em></div>
+          <div class="opts">
+            <button class="opt" data-w="a">은은하고 부드러운</button>
+            <button class="opt" data-w="b">상큼하고 시원한</button>
+            <button class="opt" data-w="c">밝고 산뜻한</button>
+            <button class="opt" data-w="?">잘 모르겠어요</button>
+          </div>
+        </div>
+        <div class="demo-actions">
+          <button class="pill solid" id="btnFallback" data-cta="demo-fallback">내 카드 보기</button>
+          <button class="pill" id="btnAI" data-cta="demo-ai" disabled>Generate with OpenAI</button>
+          <span class="hint" id="hint">세 질문에 모두 답해주세요</span>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="placeholder" id="ph">답을 고르면 여기에 1분 카드가 나타납니다.<br>기본은 규칙 기반, OpenAI 생성은 별도 버튼.</div>
+        <div class="result" id="res" hidden aria-live="polite">
+          <div class="meta"><span id="resBlend" class="blend"></span><span id="resSrc" class="src">fallback</span></div>
+          <h3 id="resTitle"></h3>
+          <p id="resOpen"></p>
+          <ol id="resSteps"></ol>
+          <p id="resClose"></p>
+          <p class="why" id="resWhy"></p>
+          <p class="ai-note" id="resNote"></p>
+          <details><summary>Raw JSON</summary><pre id="resJson"></pre></details>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ (05) CONVERSION SPLIT ============ -->
+<section class="blk" id="preorder" style="padding-bottom:0">
+  <div class="wrap conv">
+    <div class="reveal">
+      <span class="num">(01) FOR DEVELOPERS</span>
+      <h3 class="caps">Fork it, ship yours</h3>
+      <p class="kr">이 페이지는 그대로 가져다 쓸 수 있는 템플릿입니다. 카피와 블렌드만 바꾸면 향·차·캔들·루틴 제품 어디에나 맞습니다. 모듈은 <code>npm install @maum/ritual-card</code>.</p>
+      <div class="row" style="display:flex;gap:var(--s3);flex-wrap:wrap;margin-top:var(--s2)">
+        <a class="arrow-link" href="https://github.com/rio093/mindhealingparm" rel="noopener">GitHub</a>
+        <a class="arrow-link" href="https://github.com/rio093/mindhealingparm/blob/main/CONTRIBUTING.md" rel="noopener">Contributing</a>
+        <a class="arrow-link" href="https://github.com/rio093/mindhealingparm/blob/main/SECURITY.md" rel="noopener">Security</a>
+      </div>
+    </div>
+    <div class="reveal">
+      <span class="num">(02) STARTER KIT</span>
+      <h3 class="caps">Pre-order interest</h3>
+      <p class="kr">스타터 키트(향 스틱 1종 + 1분 카드) 출시 알림. 이메일 하나면 됩니다. 결제는 없습니다.</p>
+      <form class="form" id="pf" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" novalidate>
+        <label for="pf-email">Email</label>
+        <input id="pf-email" name="email" type="email" placeholder="you@company.com" required autocomplete="email">
+        <label for="pf-blend">Blend</label>
+        <select id="pf-blend" name="blend"><option value="">선택 안 함</option><option value="a">Calm Basil · 정돈된 집중</option><option value="b">Clear Mint · 또렷한 모드</option><option value="c">Energy Citrus · 산뜻한 리프레시</option></select>
+        <input type="hidden" name="diag" id="pf-diag"><input type="hidden" name="source" value="v2">
+        <p class="consent">입력한 이메일은 출시 알림 발송에만 사용하고, 출시 후 90일 이내에 삭제합니다. 언제든 회신으로 삭제를 요청할 수 있습니다.</p>
+        <div class="row"><button class="pill solid" type="submit" id="pfBtn">관심 등록</button><span class="msg" id="pfMsg"></span></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <h4>Company info</h4>
+        <ul><li>상호: 준비 중 (사이드 프로젝트 단계)</li><li>대표: 준비 중</li><li>주소: 준비 중</li><li>통신판매업신고: 판매 개시 전 등록 예정</li><li>사업자등록번호: 준비 중</li></ul>
+      </div>
+      <div>
+        <h4>CS center</h4>
+        <ul><li><a href="mailto:korrio093@gmail.com">korrio093@gmail.com</a></li><li>상담: 이메일 (평일 회신)</li><li>개인정보: 이메일은 출시 알림 용도로만 사용, 출시 후 90일 내 삭제</li></ul>
+      </div>
+      <div>
+        <h4>Project</h4>
+        <ul><li><a href="https://github.com/rio093/mindhealingparm" rel="noopener">GitHub</a></li><li><a href="https://github.com/rio093/mindhealingparm/tree/main/packages/ritual-card#readme" rel="noopener">ritual-card docs</a></li><li><a href="https://github.com/rio093/mindhealingparm/blob/main/ROADMAP.md" rel="noopener">Roadmap</a></li><li><a href="https://github.com/rio093/mindhealingparm/blob/main/SECURITY.md" rel="noopener">Security</a></li></ul>
+      </div>
+      <div>
+        <h4>사용 안내</h4>
+        <ul><li>피부에 바르지 않는 흡입 전용</li><li>임신 중, 어린이, 천식 등 호흡기·피부 민감 시 사용 전 확인</li><li>향이 불편하면 즉시 사용 중단</li><li>이 페이지의 문구는 상황·무드·루틴을 설명하는 표현이며, 그 이상의 효과를 뜻하지 않습니다. 제품 분류·표시 기준은 판매 전 확인 절차를 거칩니다.</li></ul>
+      </div>
+    </div>
+    <div class="legal"><span>© 2026 rio093 · MIT License · Open-source reference implementation, not a store</span><span><a href="https://github.com/rio093/mindhealingparm/blob/main/CONTRIBUTING.md" rel="noopener">Contributing</a> · <a href="https://github.com/rio093/mindhealingparm/blob/main/CODE_OF_CONDUCT.md" rel="noopener">Code of conduct</a></span></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function track(e,p){ try{ if(window.plausible) window.plausible(e, p?{props:p}:undefined);}catch(x){} }
+  document.querySelectorAll('[data-cta]').forEach(function(el){ el.addEventListener('click',function(){ track('CTA',{loc:el.getAttribute('data-cta'),v:'2'}); }); });
+
+  /* nav */
+  var nav=document.getElementById('nav'), hamb=document.getElementById('hamb'), mnav=document.getElementById('mnav');
+  hamb.addEventListener('click',function(){ var o=!mnav.classList.contains('open'); mnav.classList.toggle('open',o); hamb.setAttribute('aria-expanded',String(o)); });
+  mnav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click',function(){ mnav.classList.remove('open'); hamb.setAttribute('aria-expanded','false'); }); });
+
+  /* reveal — one observer, no repeats */
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }); },{rootMargin:'0px 0px -12% 0px',threshold:.1});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  /* arch: expands to full-bleed over the first screen. Only transform + radius; rAF-throttled. */
+  var arch=document.getElementById('arch'), ticking=false;
+  function archFrame(){
+    ticking=false;
+    var y=window.scrollY, h=window.innerHeight, p=Math.min(1,Math.max(0,y/(h*0.9)));
+    var e=1-Math.pow(1-p,3);
+    var w=arch.offsetWidth, sx=1+((window.innerWidth/w)-1)*e, sy=1+0.18*e;
+    arch.style.transform='scale('+sx.toFixed(3)+','+sy.toFixed(3)+')';
+    var r=(w/2)*(1-e);
+    arch.style.borderRadius=r+'px '+r+'px 0 0';
+    nav.classList.toggle('scrolled', y>24);
+  }
+  function onScroll(){ if(!ticking){ ticking=true; requestAnimationFrame(archFrame);} }
+  if(!reduce){ window.addEventListener('scroll',onScroll,{passive:true}); window.addEventListener('resize',onScroll); archFrame(); }
+  else { window.addEventListener('scroll',function(){ nav.classList.toggle('scrolled', window.scrollY>24); },{passive:true}); }
+
+  /* quiz */
+  var diag=document.getElementById('diag'), hint=document.getElementById('hint'), btnF=document.getElementById('btnFallback'), btnA=document.getElementById('btnAI');
+  diag.querySelectorAll('.q').forEach(function(q){ q.querySelectorAll('.opt').forEach(function(o){ o.addEventListener('click',function(){ q.querySelectorAll('.opt').forEach(function(x){x.classList.remove('sel');}); o.classList.add('sel'); track('진단단계',{step:q.dataset.q,w:o.dataset.w}); update(); }); }); });
+  function picked(){ var out={}; diag.querySelectorAll('.q').forEach(function(q){ var s=q.querySelector('.opt.sel'); out['q'+q.dataset.q]=s?s.dataset.w:null; }); return out; }
+  function complete(){ var p=picked(); return p.q1&&p.q2&&p.q3; }
+  function update(){ var c=complete(); hint.textContent=c?'준비 완료':'세 질문에 모두 답해주세요'; btnA.disabled=!c; }
+
+  var NAMES={a:'CALM BASIL',b:'CLEAR MINT',c:'ENERGY CITRUS'};
+  var LOCAL={ // 오프라인/로컬 미리보기용 최소 폴백 (서버 fallbackCard와 동일 문구)
+    a:{title:'정돈의 1분',opening:'들어가기 전, 흩어진 생각을 한 줄로 모으는 시간입니다.',steps:['스틱을 코앞에 두고 3초, 베르가못과 바질의 결을 천천히 들이마십니다.','4초 들이쉬고 6초 내쉬기를 세 번 반복하며 어깨의 힘을 내려놓습니다.','오늘 꼭 전할 한 문장을 마음속으로 정리합니다.'],closing:'준비됐습니다. 정돈된 채로 들어가세요.',why:'원하는 상태로 "정돈된 집중"을 골라서, 차분하게 정리되는 CALM BASIL을 추천합니다.'},
+    b:{title:'또렷함의 1분',opening:'시작 직전, 생각의 초점을 또렷하게 맞추는 시간입니다.',steps:['스틱을 코앞에 두고 3초, 자몽과 페퍼민트의 결을 짧고 선명하게 들이마십니다.','코로 4초 들이쉬고 입으로 4초 내쉬기를 세 번 반복합니다.','첫 문장을 소리 내지 않고 한 번 되뇌어 봅니다.'],closing:'준비됐습니다. 또렷하게 시작하세요.',why:'원하는 상태로 "또렷한 모드"를 골라서, 생각을 선명하게 정리하는 CLEAR MINT를 추천합니다.'},
+    c:{title:'리프레시의 1분',opening:'분위기를 가볍게 바꾸고 새로 시작하는 시간입니다.',steps:['스틱을 코앞에 두고 3초, 시트러스의 밝은 결을 들이마십니다.','크게 한 번 들이쉬고 길게 내쉰 뒤, 편안한 호흡을 세 번 이어갑니다.','지금 이 자리에서 기대하는 분위기를 한 단어로 떠올립니다.'],closing:'준비됐습니다. 산뜻하게 들어가세요.',why:'원하는 상태로 "산뜻한 리프레시"를 골라서, 분위기를 가볍게 바꾸는 ENERGY CITRUS를 추천합니다.'}
+  };
+  function localCard(p){ var b=LOCAL[p.q2]; var mm=p.q3!=='?'&&p.q3!==p.q2; return Object.assign({blend:p.q2,blendName:NAMES[p.q2],source:'fallback',fallbackReason:'local',mismatchNote:mm?'평소 끌리는 향의 결과는 다르지만, 지금 원하는 상태에는 이 블렌드가 더 맞습니다.':''},b); }
+
+  var res=document.getElementById('res'), ph=document.getElementById('ph');
+  function render(card){
+    ph.hidden=true; res.hidden=false;
+    document.getElementById('resBlend').textContent=card.blendName+' · '+({a:'정돈된 집중',b:'또렷한 모드',c:'산뜻한 리프레시'})[card.blend];
+    var src=document.getElementById('resSrc'); src.textContent=card.source==='openai'?'OpenAI · '+(card.model||''):'fallback'; src.className='src'+(card.source==='openai'?' ai':'');
+    document.getElementById('resTitle').textContent=card.title;
+    document.getElementById('resOpen').textContent=card.opening;
+    var ol=document.getElementById('resSteps'); ol.textContent=''; card.steps.forEach(function(s){ var li=document.createElement('li'); li.textContent=s; ol.appendChild(li); });
+    document.getElementById('resClose').textContent=card.closing;
+    document.getElementById('resWhy').textContent=card.why+(card.mismatchNote?' '+card.mismatchNote:'');
+    var note=document.getElementById('resNote');
+    note.textContent = card.source==='openai' ? '생성 문구는 클레임 가드(의학·신체지표 표현 차단)를 통과했습니다.' : (card.fallbackReason==='no_api_key' ? '서버에 OPENAI_API_KEY가 없어 규칙 기반 카드를 보여줍니다. 로컬에서는 .env에 키를 넣으면 생성이 켜집니다.' : (card.fallbackReason&&card.fallbackReason.indexOf('claim_guard')===0 ? '생성 결과가 클레임 가드에 걸려 규칙 기반 카드로 대체했습니다: '+card.fallbackReason : ''));
+    document.getElementById('resJson').textContent=JSON.stringify(card,null,2);
+    // 스택 카드도 같은 결과로 갱신 (루틴 섹션과 연결)
+    document.getElementById('rcTitle').textContent=card.title; var st=document.getElementById('rcSteps'); st.textContent=''; card.steps.forEach(function(s){ var li=document.createElement('li'); li.textContent=s; st.appendChild(li); }); document.getElementById('rcFoot').textContent=card.closing;
+    document.getElementById('pf-blend').value=card.blend;
+    var p=picked(); document.getElementById('pf-diag').value='q1='+p.q1+' q2='+p.q2+' q3='+p.q3+' blend='+card.blend+' src='+card.source;
+    res.scrollIntoView({behavior:reduce?'auto':'smooth',block:'nearest'});
+  }
+  function call(ai){
+    var p=picked(); if(!complete()){ update(); return; }
+    var body={q1:p.q1,q2:p.q2,q3:p.q3,locale:'ko',ai:!!ai};
+    btnA.textContent=ai?'생성 중…':'Generate with OpenAI'; btnA.disabled=true;
+    return fetch('/api/ritual-card',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){ if(r.status===429){ return r.json().then(function(d){ throw new Error('요청이 많습니다. '+(d.retryAfter||60)+'초 후 다시 시도해 주세요.'); }); } if(!r.ok) throw new Error('http '+r.status); return r.json(); })
+      .catch(function(e){ if(ai){ hint.textContent=e.message; track('AI카드',{result:'error'}); return null; } return localCard(p); })
+      .then(function(card){ if(card){ render(card); track(ai?'AI카드':'진단완료',{blend:card.blend,source:card.source}); } })
+      .then(function(){ btnA.textContent='Generate with OpenAI'; btnA.disabled=!complete(); });
+  }
+  btnF.addEventListener('click',function(){ call(false); });
+  btnA.addEventListener('click',function(){ call(true); });
+
+  /* pre-order form */
+  var form=document.getElementById('pf'), msg=document.getElementById('pfMsg'), pfBtn=document.getElementById('pfBtn');
+  form.addEventListener('submit',function(e){
+    e.preventDefault(); if(pfBtn.disabled) return;
+    var email=document.getElementById('pf-email'); var endpoint=form.getAttribute('action')||'';
+    if(!email.value||!email.checkValidity()){ msg.className='msg err'; msg.textContent='올바른 이메일을 입력해주세요.'; email.focus(); return; }
+    if(endpoint.indexOf('YOUR_FORM_ID')!==-1){ msg.className='msg err'; msg.textContent='폼 엔드포인트 미설정 — form action을 Formspree ID로 교체하세요.'; return; }
+    pfBtn.disabled=true; msg.className='msg'; msg.textContent='';
+    fetch(endpoint,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}}).then(function(r){ if(!r.ok) throw new Error(); var b=document.getElementById('pf-blend').value||'none'; form.reset(); msg.className='msg ok'; msg.textContent='등록 완료. 출시되면 이메일로 알려드릴게요.'; track('사전주문',{blend:b,v:'2'}); })
+      .catch(function(){ msg.className='msg err'; msg.textContent='전송에 실패했어요. 잠시 후 다시 시도해 주세요.'; })
+      .then(function(){ pfBtn.disabled=false; });
+  });
+})();
+</script>
+</body>
+</html>

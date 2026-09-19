@@ -72,6 +72,10 @@ ROADMAP.md · CHANGELOG.md · CONTRIBUTING.md
 - 스트레스 해소, 불안 완화, 집중력 향상, 치료, 효능처럼 신체 지표·질환·의학적 효과로 읽힐 수 있는 표현은 쓰지 않습니다. `@maum/ritual-card`의 클레임 가드가 같은 기준으로 생성 문구를 검사합니다.
 - 제품 분류(화장품·방향제 등)와 표시 기준은 판매 전 관할 기관이나 전문가에게 확인해야 합니다. 이 저장소는 그 판단을 대신하지 않습니다.
 
+### 라이브 데모와 API 경계
+
+`index.v2.html`은 국내·해외 레퍼런스를 분석해 다시 설계한 v2 랜딩입니다(첫 화면 상단에 OSS 성격을 명시). 퀴즈 3문항 → 규칙 기반 카드가 즉시 나오고, **"Generate with OpenAI"** 버튼만 서버의 `/api/ritual-card`에 `ai: true`로 요청합니다. 그 경로에만 per-IP rate limit(`RITUAL_AI_LIMIT`/`RITUAL_AI_WINDOW_MS`)과 origin 허용 목록(`RITUAL_ALLOWED_ORIGINS`)이 걸리고, 키는 서버에만 있습니다. 위협 모델은 [SECURITY.md](SECURITY.md)에 있습니다.
+
 ### 기여하기
 
 이슈와 PR을 환영합니다. 방법은 [CONTRIBUTING.md](CONTRIBUTING.md), 방향은 [ROADMAP.md](ROADMAP.md)를 보세요. 기여자는 [행동 강령](CODE_OF_CONDUCT.md)을 따릅니다.
@@ -137,6 +141,10 @@ The template describes the product only as a "switch" and a "preparation ritual"
 - Write about the situation, identity, and mood. Vocabulary: settle, clear, switch, prepare, ritual, routine.
 - Do not use language that could read as a body metric, disease, or medical effect — stress relief, anxiety reduction, improved focus, treatment, efficacy. The claim guard in `@maum/ritual-card` checks generated copy against the same standard.
 - Product classification (cosmetic, fragrance product, or otherwise) and labelling rules must be confirmed with the regulator or a specialist in your market before selling. This repository does not make that decision for you.
+
+### Live demo and the API boundary
+
+`index.v2.html` is the redesigned v2 landing (its top bar states the OSS nature of the site). The three-question quiz returns a rule-based card instantly; only the **"Generate with OpenAI"** button posts `ai: true` to `/api/ritual-card`. That path alone is rate-limited per IP (`RITUAL_AI_LIMIT` / `RITUAL_AI_WINDOW_MS`) and origin-restricted (`RITUAL_ALLOWED_ORIGINS`); the key never leaves the server. The threat model is in [SECURITY.md](SECURITY.md).
 
 ### Contributing
 
