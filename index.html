@@ -187,13 +187,14 @@
       <p>지금 필요한 상태를 고르면, 맞는 향을 추천합니다.</p>
     </div>
 
-    <div class="diag reveal">
+    <!-- data-ai-endpoint: 비워두면 AI 카드 비활성. "/api/ritual-card"로 바꾸면 결과 아래에 1분 루틴 카드가 붙습니다 (packages/ritual-card). -->
+    <div class="diag reveal" data-ai-endpoint="">
       <div class="q" data-q="1">
         <div class="qt"><span class="qn">Q1</span> 주로 언제 쓰고 싶나요?</div>
         <div class="opts">
-          <button class="opt" data-w="0">발표·피칭 직전</button>
-          <button class="opt" data-w="0">긴장되는 오후 미팅</button>
-          <button class="opt" data-w="0">아침 첫 콜·중요 통화</button>
+          <button class="opt" data-w="0" data-m="presentation">발표·피칭 직전</button>
+          <button class="opt" data-w="0" data-m="meeting">긴장되는 오후 미팅</button>
+          <button class="opt" data-w="0" data-m="call">아침 첫 콜·중요 통화</button>
         </div>
       </div>
       <div class="q" data-q="2">
@@ -227,6 +228,7 @@
           <a href="#preorder" class="btn btn-primary" data-cta="result-preorder">이 스위치로 사전 주문 →</a>
           <span id="rmismatch"></span>
         </div>
+        <div class="rcard-ai" id="rcardAi" hidden></div>
       </div>
     </div>
   </div>

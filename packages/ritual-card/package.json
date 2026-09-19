@@ -1,0 +1,42 @@
+{
+  "name": "@maum/ritual-card",
+  "version": "0.1.0",
+  "description": "Personalised one-minute ritual cards from a 3-question scent quiz, generated with the OpenAI Responses API and guarded against medical claims. 3문항 향 진단 답변으로 1분 준비 루틴 카드를 생성하는 모듈.",
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./guard": "./src/guard.js",
+    "./blends": "./src/blends.js",
+    "./fallback": "./src/fallback.js"
+  },
+  "bin": {
+    "ritual-card": "./bin/cli.js"
+  },
+  "files": [
+    "src",
+    "bin",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "openai",
+    "responses-api",
+    "structured-output",
+    "aromatherapy",
+    "ritual",
+    "landing-page",
+    "quiz"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rio093/mindhealingparm",
+    "directory": "packages/ritual-card"
+  }
+}

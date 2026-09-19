@@ -176,7 +176,36 @@
       if (pfBlend) pfBlend.value = blend;   // 진단 결과로 관심 향 자동 선택
       if (pfDiag) pfDiag.value = diagStr;
       track('진단완료', { blend: blend, mismatch: String(mismatch), preference: p['3'] });
+      renderAiCard(p, blend);
     });
+
+    /* ---- AI 1분 루틴 카드 (opt-in) ----
+       .diag의 data-ai-endpoint가 비어 있으면 아무것도 하지 않는다.
+       "/api/ritual-card"로 설정하면 packages/ritual-card 결과를 결과 카드 아래에 붙인다.
+       실패해도 조용히 건너뛰므로 진단 흐름은 영향받지 않는다. */
+    function renderAiCard(p, blend) {
+      var endpoint = diag.getAttribute('data-ai-endpoint');
+      var box = document.getElementById('rcardAi');
+      if (!endpoint || !box) return;
+      var q1 = diag.querySelector('.q[data-q="1"] .opt.sel');
+      var body = { q1: q1 ? q1.getAttribute('data-m') : '', q2: blend, q3: p['3'], locale: 'ko' };
+      box.hidden = true; box.textContent = '';
+      fetch(endpoint, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (card) {
+          if (!card || !card.steps) return;
+          var h = document.createElement('h4'); h.textContent = card.title;
+          var op = document.createElement('p'); op.textContent = card.opening;
+          var ol = document.createElement('ol');
+          card.steps.forEach(function (s) { var li = document.createElement('li'); li.textContent = s; ol.appendChild(li); });
+          var cl = document.createElement('p'); cl.textContent = card.closing;
+          var why = document.createElement('p'); why.className = 'ai-why'; why.textContent = card.why;
+          box.appendChild(h); box.appendChild(op); box.appendChild(ol); box.appendChild(cl); box.appendChild(why);
+          box.hidden = false;
+          track('AI카드', { source: card.source || 'unknown', blend: blend });
+        })
+        .catch(function () {});
+    }
   }
 
   /* ---- preorder form submit ---- */
